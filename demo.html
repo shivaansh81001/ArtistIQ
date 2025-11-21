@@ -1,0 +1,1684 @@
+<!-- ...existing code... -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>🎨 ArtistIQ - Art Learning for Young Children (Ages 3-5)</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <style>
+        :root{
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --accent: #f093fb;
+            --success: #4facfe;
+            --warning: #43e97b;
+            --error: #fa709a;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --bg-dark: #0f172a;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-light: #94a3b8;
+            --border: #e2e8f0;
+            --border-light: #f1f5f9;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-accent: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-warm: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --gradient-cool: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+        *{box-sizing:border-box;margin:0;padding:0}
+        html,body{height:100%}
+        body{
+            font-family:'Inter',system-ui,Segoe UI,Roboto,Arial,sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 20%, #f093fb 40%, #f5576c 60%, #4facfe 80%, #43e97b 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 20s ease infinite;
+            color: var(--text-primary);
+            -webkit-font-smoothing:antialiased;
+            -moz-osx-font-smoothing:grayscale;
+            padding:24px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            min-height:100vh;
+            position: relative;
+            overflow-x: hidden;
+            perspective: 1000px;
+            transform-style: preserve-3d;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            /* Disabled background overlay to remove screen shadow */
+            background: none;
+            display: none;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 100% 50%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 100%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .site {
+            width:100%;
+            max-width:1400px;
+            background:#ffffff;
+            border-radius:16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            border: 1px solid #e5e7eb;
+            position: relative;
+            overflow:hidden;
+            z-index: 1;
+        }
+        
+        .site:hover {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        @keyframes siteFloat {
+            0%, 100% { transform: translateY(0px) rotateX(0deg) rotateY(0deg); }
+            25% { transform: translateY(-5px) rotateX(1deg) rotateY(-1deg); }
+            50% { transform: translateY(-8px) rotateX(0deg) rotateY(0deg); }
+            75% { transform: translateY(-5px) rotateX(-1deg) rotateY(1deg); }
+        }
+        
+        .site::before { content: none; }
+        
+        .site::after { content: none; }
+        
+        @keyframes borderGlow {
+            0% { opacity: 0.3; }
+            100% { opacity: 0.8; }
+        }
+
+        .header {
+            background: #667eea;
+            padding:28px 24px;
+            color:white;
+            text-align:center;
+            position: relative;
+            border-radius: 16px 16px 0 0;
+        }
+        
+        .header::before { content: none; }
+        
+        .header::after { content: none; }
+        
+        @keyframes headerGradient {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 100% 50%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 100%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .brand {
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            gap:16px;
+        }
+        
+        .logo {
+            width:100px;
+            height:100px;
+            border-radius:28px;
+            background: 
+                linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 100%);
+            backdrop-filter: blur(25px);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:40px;
+            box-shadow: 
+                0 12px 40px rgba(0,0,0,0.3), 
+                inset 0 1px 0 rgba(255,255,255,0.4),
+                0 0 0 1px rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: logoFloat 5s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+            z-index: 2;
+            transform-style: preserve-3d;
+        }
+        
+        .logo::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            transition: left 0.8s ease;
+        }
+        
+        .logo::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, 
+                rgba(255,255,255,0.4) 0%, 
+                rgba(255,255,255,0.1) 25%, 
+                rgba(255,255,255,0.4) 50%, 
+                rgba(255,255,255,0.1) 75%, 
+                rgba(255,255,255,0.4) 100%);
+            border-radius: 30px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .logo:hover::before {
+            left: 100%;
+        }
+        
+        .logo:hover::after {
+            opacity: 1;
+        }
+        
+        .logo:hover {
+            transform: scale(1.2) rotate(15deg) rotateX(10deg) rotateY(10deg) translateZ(30px);
+            box-shadow: 
+                0 25px 80px rgba(0,0,0,0.5), 
+                inset 0 2px 0 rgba(255,255,255,0.6),
+                0 0 0 3px rgba(255,255,255,0.4);
+        }
+        
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg) rotateX(0deg) rotateY(0deg); }
+            25% { transform: translateY(-12px) rotate(2deg) rotateX(2deg) rotateY(-2deg); }
+            50% { transform: translateY(-15px) rotate(0deg) rotateX(0deg) rotateY(0deg); }
+            75% { transform: translateY(-12px) rotate(-2deg) rotateX(-2deg) rotateY(2deg); }
+        }
+        
+        .title h1{
+            font-size:36px; 
+            font-weight:900; 
+            margin-bottom:16px;
+            text-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 50%, #e0f2fe 100%);
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .title p{
+            font-size:20px; 
+            opacity:0.95; 
+            font-weight:600;
+            text-shadow: 0 3px 6px rgba(0,0,0,0.2);
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .age-indicator {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 8px;
+            display: inline-block;
+        }
+
+        .top-controls {
+            display:flex;
+            gap:16px;
+            align-items:center;
+            justify-content:center;
+            margin-top:24px;
+        }
+        
+        .chip {
+            background:rgba(255,255,255,0.2);
+            backdrop-filter:blur(10px);
+            padding:12px 20px;
+            border-radius:50px;
+            font-size:14px;
+            font-weight:600;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .main {
+            display:grid;
+            grid-template-columns: 1fr 380px;
+            gap:24px;
+            padding:24px;
+            align-items:start;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        @media (max-width:1200px){ 
+            .main { 
+                grid-template-columns: 1fr 350px; 
+                gap: 24px;
+                padding: 24px;
+            } 
+        }
+        
+        @media (max-width:1000px){ 
+            .main { 
+                grid-template-columns: 1fr; 
+                gap: 20px;
+                padding: 20px;
+            } 
+            .right { order:2 } 
+            .left { order:1 } 
+        }
+        
+        @media (max-width:768px){ 
+            .main { 
+                gap: 20px;
+                padding: 20px;
+            } 
+        }
+        
+        @media (max-width:480px){ 
+            .main { 
+                gap: 16px;
+                padding: 16px;
+            } 
+        }
+
+        /* Canvas card */
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border-radius:24px;
+            padding:28px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.1) 100%),
+                radial-gradient(circle at 20% 20%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(240, 147, 251, 0.1) 0%, transparent 50%);
+            border-radius: 28px;
+            pointer-events: none;
+        }
+        
+        .card:hover {
+            transform: translateY(-6px) scale(1.03) rotateX(2deg) rotateY(2deg) translateZ(15px);
+            box-shadow: 
+                0 20px 40px rgba(0,0,0,0.2),
+                0 0 0 1px rgba(255, 255, 255, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .canvas-wrap {
+            display:flex;
+            flex-direction:column;
+            gap:20px;
+        }
+        
+        .canvas-wrap.card {
+            padding: 20px;
+        }
+
+        .canvas-toolbar {
+            display:flex;
+            gap:12px;
+            align-items:center;
+            justify-content:space-between;
+            flex-wrap:wrap;
+            padding:12px 14px;
+            background: #ffffff;
+            border-radius:12px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+            position: relative;
+        }
+        
+        .canvas-toolbar::before { content: none; }
+
+        .left-tools, .right-tools { 
+            display:flex; 
+            gap:16px; 
+            align-items:center; 
+            flex-wrap:wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn {
+            border: 1px solid #e5e7eb;
+            background: #ffffff;
+            color: #111827;
+            padding:10px 16px;
+            border-radius:10px;
+            cursor:pointer;
+            font-weight:600;
+            font-size:14px;
+            transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            display:flex;
+            align-items:center;
+            gap:8px;
+        }
+        
+        .btn::before { content: none; }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:hover{ 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            background: #f8fafc;
+        }
+        
+        .btn:active {
+            transform: scale(0.98);
+        }
+        
+        .btn.primary {
+            background: #6366f1;
+            color:#fff;
+            border: 1px solid #5458ee;
+            box-shadow: 0 4px 12px rgba(99,102,241,0.25);
+        }
+        
+        .btn.primary::before { content: none; }
+        
+        .btn.primary:hover::before {
+            left: 100%;
+        }
+        
+        .btn.primary:hover {
+            background: #5458ee;
+            box-shadow: 0 6px 16px rgba(99,102,241,0.35);
+        }
+        
+        .btn.primary:active {
+            transform: scale(0.98);
+        }
+        
+        .btn.primary:disabled {
+            background: #9ca3af;
+            border-color:#9ca3af;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn.primary.loading {
+            position: relative;
+            color: transparent;
+        }
+        
+        .btn.primary.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .btn.ghost {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            color: #374151;
+            transition: background 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .btn.ghost:hover {
+            background: #eef2f7;
+            color: #111827;
+            border-color: #e5e7eb;
+        }
+        
+        .btn.ghost:active {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(0);
+        }
+        
+        .btn.ghost.active {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: rgba(99, 102, 241, 0.3);
+            color: #6366f1;
+        }
+
+        .canvas-area {
+            width:100%;
+            background: var(--bg-primary);
+            border-radius:20px;
+            padding:20px;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            border: 2px solid var(--border);
+            position:relative;
+            min-height: 650px;
+        }
+        
+        .canvas-area.card {
+            padding: 20px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        canvas {
+            width: 600px;
+            height: 600px;
+            min-width: 400px;
+            min-height: 400px;
+            max-width: calc(100% - 20px);
+            max-height: calc(100% - 20px);
+            border-radius:20px;
+            background: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            touch-action: none;
+            cursor:crosshair;
+            box-shadow: 
+                inset 0 2px 8px rgba(0,0,0,0.06), 
+                0 6px 24px rgba(0,0,0,0.1),
+                0 0 0 1px rgba(255, 255, 255, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        
+        canvas:hover {
+            box-shadow: 
+                inset 0 3px 12px rgba(0,0,0,0.12), 
+                0 15px 50px rgba(0,0,0,0.25),
+                0 0 0 3px rgba(102, 126, 234, 0.5);
+            border-color: rgba(102, 126, 234, 0.6);
+            transform: scale(1.02) rotateX(1deg) rotateY(1deg) translateZ(5px);
+        }
+        
+        canvas:active {
+            transform: scale(0.999);
+            transition: all 0.1s ease;
+        }
+        
+        .canvas-area {
+            position: relative;
+        }
+        
+        .canvas-area::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .canvas-area.drawing::before {
+            width: 200px;
+            height: 200px;
+        }
+        
+        .canvas-area::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(3px 3px at 20px 30px, rgba(102, 126, 234, 0.4), transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(240, 147, 251, 0.4), transparent),
+                radial-gradient(2px 2px at 90px 40px, rgba(79, 172, 254, 0.4), transparent),
+                radial-gradient(1px 1px at 130px 80px, rgba(67, 233, 123, 0.4), transparent),
+                radial-gradient(3px 3px at 160px 30px, rgba(250, 112, 154, 0.4), transparent),
+                radial-gradient(1px 1px at 180px 60px, rgba(254, 225, 64, 0.4), transparent),
+                radial-gradient(2px 2px at 200px 20px, rgba(118, 75, 162, 0.4), transparent),
+                radial-gradient(1px 1px at 220px 90px, rgba(245, 87, 108, 0.4), transparent);
+            background-repeat: repeat;
+            background-size: 250px 120px;
+            animation: float 25s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+        
+        .canvas-area:hover::after {
+            opacity: 1;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg) scale(1); }
+            25% { transform: translateY(-25px) rotate(90deg) scale(1.1); }
+            50% { transform: translateY(-50px) rotate(180deg) scale(1); }
+            75% { transform: translateY(-75px) rotate(270deg) scale(1.1); }
+            100% { transform: translateY(-100px) rotate(360deg) scale(1); }
+        }
+
+        .palette {
+            display:flex;
+            gap:12px;
+            align-items:center;
+            flex-wrap:wrap;
+            padding: 6px;
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .swatch{
+            width:40px;
+            height:40px;
+            border-radius:12px;
+            border:2px solid #e5e7eb;
+            cursor:pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+        }
+        
+        .swatch::before { content: none; }
+        
+        .swatch:hover {
+            transform: scale(1.08);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+        }
+        
+        /* removed empty rule */
+        
+        .swatch.active{ 
+            transform:scale(1.08);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-color: #6366f1;
+        }
+        
+        @keyframes pulse { }
+
+        .slider { 
+            display:flex; 
+            gap:16px; 
+            align-items:center; 
+            color: var(--text-secondary); 
+            font-size:14px; 
+            font-weight:600;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        
+        input[type='range']{ 
+            width: 120px;
+            height: 6px;
+            border-radius: 3px;
+            background: linear-gradient(90deg, #e2e8f0 0%, #cbd5e1 100%);
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        input[type='range']::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        input[type='range']::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.6);
+        }
+        
+        input[type='range']::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        input[type='range']::-moz-range-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.6);
+        }
+
+        /* Right panel */
+        .right {
+            width:100%;
+            display:flex;
+            flex-direction:column;
+            gap:20px;
+        }
+
+        .game-info {
+            padding:28px;
+            border-radius:24px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .game-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            border-radius: 24px;
+            pointer-events: none;
+        }
+        
+        .score {
+            display:flex;
+            gap:16px;
+            align-items:center;
+            justify-content:space-between;
+            font-weight:700;
+            margin-bottom:16px;
+        }
+        
+        .progress{
+            height:14px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            border-radius:999px;
+            overflow:hidden;
+            margin-top:20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .progress > i{ 
+            display:block;
+            height:100%;
+            background: linear-gradient(90deg, #fa709a 0%, #fee140 50%, #667eea 100%); 
+            width:0%; 
+            transition:width 1.2s cubic-bezier(.2,.9,.3,1);
+            border-radius:999px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress > i::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .result-card{
+            padding:28px;
+            border-radius:24px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(20px); 
+            opacity:0; 
+            transition:all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .result-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            border-radius: 24px;
+            pointer-events: none;
+        }
+        
+        .result-card.show{ 
+            transform: translateY(0); 
+            opacity:1 
+        }
+
+        .prediction { 
+            font-size:20px; 
+            font-weight:700; 
+            color: var(--text-primary); 
+            margin-bottom:8px 
+        }
+        
+        .confidence { 
+            color: var(--text-secondary); 
+            font-size:14px; 
+            margin-bottom:12px 
+        }
+
+        .confidence-bar {
+            height:10px;
+            border-radius:999px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            overflow:hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .confidence-bar > i { 
+            height:100%; 
+            display:block; 
+            background: linear-gradient(90deg, #43e97b 0%, #38f9d7 50%, #4facfe 100%); 
+            width:0; 
+            transition:width .8s ease-in-out;
+            border-radius:999px;
+        }
+
+        .footer-note { 
+            font-size:15px;
+            color: var(--text-secondary); 
+            text-align:center; 
+            margin-top:20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(15px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            font-weight: 500;
+        }
+
+        /* Accessibility Controls */
+        .accessibility-panel {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .accessibility-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .sensitivity-controls {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .sensitivity-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg-primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+        
+        .sensitivity-option:hover {
+            background: var(--bg-secondary);
+        }
+        
+        .sensitivity-option.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+        
+        .reward-progress {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 50%, #667eea 100%);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 24px 0;
+            text-align: center;
+            box-shadow: 0 12px 35px rgba(250, 112, 154, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(15px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .reward-progress::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 100%);
+            border-radius: 16px;
+            pointer-events: none;
+        }
+        
+        .reward-text {
+            font-size: 16px;
+            font-weight: 700;
+            color: #92400e;
+            margin-bottom: 12px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .reward-stars {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 12px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .star {
+            width: 32px;
+            height: 32px;
+            opacity: 0.4;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: scale(0.9) rotate(0deg);
+            filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.3));
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .star::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.6s ease;
+        }
+        
+        .star.earned {
+            opacity: 1;
+            transform: scale(1.5) rotate(360deg);
+            animation: starEarned 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: drop-shadow(0 6px 12px rgba(250, 112, 154, 0.6));
+        }
+        
+        .star.earned::before {
+            width: 200%;
+            height: 200%;
+            animation: starGlow 2s ease-in-out infinite;
+        }
+        
+        @keyframes starEarned {
+            0% { 
+                transform: scale(0.9) rotate(0deg);
+                opacity: 0.4;
+            }
+            25% { 
+                transform: scale(1.8) rotate(90deg);
+                opacity: 1;
+            }
+            50% { 
+                transform: scale(2.2) rotate(180deg);
+                opacity: 1;
+            }
+            75% { 
+                transform: scale(1.6) rotate(270deg);
+                opacity: 1;
+            }
+            100% { 
+                transform: scale(1.5) rotate(360deg);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes starGlow {
+            0%, 100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+        }
+        
+        /* Reduced stimuli mode */
+        .reduced-stimuli .btn {
+            transition: none;
+        }
+        
+        .reduced-stimuli .btn:hover {
+            transform: none;
+            box-shadow: var(--shadow);
+        }
+        
+        .reduced-stimuli .swatch:hover {
+            transform: none;
+        }
+        
+        .reduced-stimuli .swatch.active {
+            transform: scale(1.05);
+        }
+
+        /* Responsive design improvements */
+        @media (max-width: 768px) {
+            .main {
+                padding: 20px;
+                gap: 20px;
+            }
+            
+            .canvas-toolbar {
+                flex-direction: column;
+                gap: 16px;
+                padding: 20px;
+            }
+            
+            .left-tools, .right-tools {
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 12px;
+                width: 100%;
+            }
+            
+            .palette {
+                justify-content: center;
+            }
+            
+            canvas {
+                width: 100%;
+                max-width: 500px;
+                height: auto;
+                aspect-ratio: 1;
+            }
+            
+            .canvas-area {
+                min-height: 550px;
+                padding: 16px;
+            }
+            
+            .header {
+                padding: 24px;
+            }
+            
+            .title h1 {
+                font-size: 24px;
+            }
+            
+            .sensitivity-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            canvas {
+                width: 100%;
+                max-width: calc(100vw - 80px);
+                height: auto;
+                aspect-ratio: 1;
+                min-width: 300px;
+                min-height: 300px;
+            }
+            
+            .canvas-area {
+                min-height: 400px;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="site">
+        <div class="header">
+            <div class="brand">
+                <div class="logo">🎨</div>
+                <div class="title">
+                    <h1>ArtistIQ</h1>
+                    <p>Fun art learning for little artists!</p>
+                    <div class="age-indicator">Perfect for ages 3-5</div>
+                </div>
+            </div>
+
+            <div class="top-controls">
+                <div class="chip">Rounds: <strong id="round-chip">1/5</strong></div>
+                <div class="chip">Score: <strong id="score-chip">0/50</strong></div>
+            </div>
+        </div>
+
+        <div class="main">
+            <div class="left card canvas-wrap">
+
+                <!-- Reward Progress -->
+                <div class="reward-progress">
+                    <div class="reward-text">🐚 Your Art Stars!</div>
+                    <div class="reward-stars">
+                        <span class="star">🐚</span>
+                        <span class="star">🐚</span>
+                        <span class="star">🐚</span>
+                        <span class="star">🐚</span>
+                        <span class="star">🐚</span>
+                    </div>
+                </div>
+                <div class="canvas-toolbar">
+                    <div class="left-tools">
+                        <div class="palette" id="palette">
+                            <div class="swatch active" data-color="#000000" style="background:#000000"></div>
+                            <div class="swatch" data-color="#EF4444" style="background:#EF4444"></div>
+                            <div class="swatch" data-color="#F59E0B" style="background:#F59E0B"></div>
+                            <div class="swatch" data-color="#10B981" style="background:#10B981"></div>
+                            <div class="swatch" data-color="#3B82F6" style="background:#3B82F6"></div>
+                            <div class="swatch" data-color="#8B5CF6" style="background:#8B5CF6"></div>
+                            <div class="swatch" data-color="#F472B6" style="background:#F472B6"></div>
+                        </div>
+
+                        <button class="btn ghost" id="eraserBtn" title="Toggle eraser">🧽 Erase</button>
+                        <button class="btn ghost" id="undoBtn" title="Undo last stroke">↶ Undo</button>
+                        <button class="btn ghost" id="clearBtn" title="Clear canvas">🗑️ Clear</button>
+                    </div>
+
+                    <div class="right-tools">
+                        <button class="btn ghost" id="audioToggle" title="Toggle background sound">🔇 Sound Off</button>
+                        <div class="slider">
+                            <label>Brush Size</label>
+                            <input id="sizeRange" type="range" min="1" max="32" value="6" />
+                        </div>
+                        <button class="btn primary" id="analyzeBtn">🔎 Analyze</button>
+                    </div>
+                </div>
+
+
+                <div class="canvas-area card">
+                    <canvas id="canvas"></canvas>
+                </div>
+
+                <div class="footer-note">💡 Tip: Use your finger or mouse to draw! Have fun creating! 🎨</div>
+            </div>
+
+            <div class="right">
+                <div class="game-info card">
+                    <div style="display:flex;justify-content:space-between;align-items:center">
+                        <div>
+                            <h3 style="margin-bottom:6px">🎨 Art Adventure</h3>
+                            <div style="color:var(--text-secondary);font-size:14px">Draw something fun and see what happens!</div>
+                        </div>
+                        <div style="text-align:right">
+                            <div style="font-size:14px;color:var(--text-secondary)">Round</div>
+                            <div style="font-weight:800;font-size:20px" id="roundSmall">1/5</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:16px">
+                        <div style="display:flex;justify-content:space-between;align-items:center">
+                            <div style="font-size:14px;color:var(--text-secondary)">Your Progress</div>
+                            <div style="font-weight:800;font-size:20px" id="scoreSmall">0/50</div>
+                        </div>
+
+                        <div class="progress" aria-hidden="true">
+                            <i id="scoreProgress" style="width:0%"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-card" id="resultCard" aria-live="polite" role="status" style="display:block;opacity:1">
+                    <div class="prediction" id="predictionText">Ready to draw something amazing? 🎨</div>
+                    <div class="confidence" id="confidenceText">Draw your favorite shape and I'll tell you what I see!</div>
+
+                    <div class="confidence-bar" style="margin-top:8px;">
+                        <i id="confidenceBar" style="width:0%"></i>
+                    </div>
+
+                    <div id="chatbotText" style="margin-top:12px;color:var(--muted);font-size:13px"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Canvas and UI setup
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d', { alpha: false });
+
+        const palette = document.getElementById('palette');
+        const swatches = Array.from(document.querySelectorAll('.swatch'));
+        const sizeRange = document.getElementById('sizeRange');
+        const eraserBtn = document.getElementById('eraserBtn');
+        const undoBtn = document.getElementById('undoBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+
+        const roundChip = document.getElementById('round-chip');
+        const scoreChip = document.getElementById('score-chip');
+        const roundSmall = document.getElementById('roundSmall');
+        const scoreSmall = document.getElementById('scoreSmall');
+        const scoreProgress = document.getElementById('scoreProgress');
+
+        // Accessibility and reward elements
+        const sensitivityOptions = document.querySelectorAll('.sensitivity-option');
+        const stars = document.querySelectorAll('.star');
+
+        const predictionText = document.getElementById('predictionText');
+        const confidenceText = document.getElementById('confidenceText');
+        const confidenceBar = document.getElementById('confidenceBar');
+        const chatbotText = document.getElementById('chatbotText');
+        const resultCard = document.getElementById('resultCard');
+
+        
+        // Game state
+        // Initialize currentColor from the active swatch to avoid mismatch
+        let currentColor = (document.querySelector('.swatch.active')?.dataset.color) || '#000000';
+        let brushSize = Number(sizeRange.value);
+        let erasing = false;
+        let isDrawing = false;
+        let points = [];
+        let dpr = Math.max(1, window.devicePixelRatio || 1);
+
+        // Accessibility and reward state
+        let currentSensitivityMode = 'balanced';
+        let earnedStars = 0;
+        let totalRoundsCompleted = 0;
+
+        let currentRound = 1;
+        let totalScore = 0;
+        const maxRounds = 5;
+        const maxScore = 50;
+        let sum_score = 0;
+
+        // Undo history
+        const history = [];
+        const maxHistory = 20;
+
+        function resizeCanvas() {
+            // CSS size
+            const rect = canvas.getBoundingClientRect();
+            const w = Math.floor(rect.width * dpr);
+            const h = Math.floor(rect.height * dpr);
+            if (canvas.width !== w || canvas.height !== h) {
+                // Save image to restore after resize
+                const img = ctx.getImageData(0, 0, canvas.width || 1, canvas.height || 1);
+                canvas.width = w;
+                canvas.height = h;
+                canvas.style.width = rect.width + 'px';
+                canvas.style.height = rect.height + 'px';
+                ctx.scale(dpr, dpr);
+                // if previous data exists, try to restore (simple fill background)
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0,0,rect.width,rect.height);
+                if (img) {
+                    // best-effort: nothing complex here; leave canvas white on resize
+                }
+            }
+        }
+
+        // Initialize visual size using CSS (canvas width/height set via CSS)
+        function init() {
+            // Canvas size is set via CSS (500px x 500px), no need to set it in JS
+            resizeCanvas();
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0,0,canvas.width/dpr, canvas.height/dpr);
+            pushHistory(); // initial blank
+        }
+
+        // History helpers
+        function pushHistory() {
+            try {
+                if (history.length >= maxHistory) history.shift();
+                const data = canvas.toDataURL('image/png');
+                history.push(data);
+                updateUndoState();
+            } catch (err) { console.warn('History push failed', err) }
+        }
+
+        function undo() {
+            if (history.length <= 1) return;
+            history.pop(); // current
+            const last = history[history.length - 1];
+            const img = new Image();
+            img.onload = () => {
+                ctx.clearRect(0, 0, canvas.width/dpr, canvas.height/dpr);
+                ctx.drawImage(img, 0,0, canvas.width/dpr, canvas.height/dpr);
+            };
+            img.src = last;
+            updateUndoState();
+        }
+
+        function updateUndoState() {
+            undoBtn.disabled = history.length <= 1;
+            undoBtn.style.opacity = undoBtn.disabled ? 0.5 : 1;
+        }
+
+        // Drawing with pointer events & smoothing
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: (e.clientX - rect.left),
+                y: (e.clientY - rect.top)
+            };
+        }
+
+        function pointerDown(e) {
+            if (e.pointerType === 'mouse' && e.button !== 0) return;
+            e.preventDefault();
+            canvas.setPointerCapture(e.pointerId);
+            isDrawing = true;
+            points = [];
+            const p = getPos(e);
+            points.push(p);
+            drawPoint(p, true);
+            
+            // Add visual feedback
+            canvas.parentElement.classList.add('drawing');
+        }
+
+        function pointerMove(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+            const p = getPos(e);
+            points.push(p);
+            if (points.length > 2) {
+                // smoothing with quadratic curve over last three points
+                const prev = points[points.length - 3];
+                const mid = {
+                    x: (prev.x + points[points.length - 2].x) / 2,
+                    y: (prev.y + points[points.length - 2].y) / 2
+                };
+                ctx.beginPath();
+                ctx.moveTo(mid.x, mid.y);
+                const cp = points[points.length - 2];
+                const np = points[points.length - 1];
+                ctx.quadraticCurveTo(cp.x, cp.y, (cp.x + np.x)/2, (cp.y + np.y)/2);
+                ctx.stroke();
+            } else {
+                drawPoint(p, false);
+            }
+        }
+
+        function pointerUp(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+            canvas.releasePointerCapture && canvas.releasePointerCapture(e.pointerId);
+            isDrawing = false;
+            ctx.beginPath();
+            pushHistory();
+            
+            // Remove visual feedback
+            canvas.parentElement.classList.remove('drawing');
+        }
+
+        function drawPoint(p, moveOnly) {
+            ctx.lineWidth = brushSize;
+            ctx.strokeStyle = erasing ? '#fff' : currentColor;
+            ctx.globalCompositeOperation = erasing ? 'destination-out' : 'source-over';
+            if (!moveOnly) {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, ctx.lineWidth / 2, 0, Math.PI * 2);
+                ctx.fillStyle = ctx.strokeStyle;
+                ctx.fill();
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+            } else {
+                ctx.lineTo(p.x, p.y);
+                ctx.stroke();
+            }
+        }
+
+        // UI bindings
+        swatches.forEach(s => s.addEventListener('click', () => {
+            swatches.forEach(x => x.classList.remove('active'));
+            s.classList.add('active');
+            currentColor = s.dataset.color;
+            erasing = false;
+            eraserBtn.classList.remove('active');
+        }));
+
+        sizeRange.addEventListener('input', (e) => {
+            brushSize = Number(e.target.value);
+        });
+
+        eraserBtn.addEventListener('click', () => {
+            erasing = !erasing;
+            if (erasing) {
+                eraserBtn.classList.add('active');
+            } else {
+                eraserBtn.classList.remove('active');
+            }
+        });
+
+        clearBtn.addEventListener('click', () => {
+            if (!confirm('Clear the canvas?')) return;
+            ctx.clearRect(0,0,canvas.width/dpr, canvas.height/dpr);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0,0,canvas.width/dpr, canvas.height/dpr);
+            pushHistory();
+        });
+
+        undoBtn.addEventListener('click', () => undo());
+
+        // Sensitivity controls
+        sensitivityOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                sensitivityOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                currentSensitivityMode = option.dataset.mode;
+                applySensitivityMode();
+            });
+        });
+
+        function applySensitivityMode() {
+            const body = document.body;
+            body.classList.remove('reduced-stimuli');
+            
+            switch(currentSensitivityMode) {
+                case 'calm':
+                    body.classList.add('reduced-stimuli');
+                    // Reduce visual effects for hypersensitive children
+                    break;
+                case 'energetic':
+                    // Keep all effects for hyposensitive children
+                    break;
+                case 'balanced':
+                default:
+                    // Standard effects for neurotypical children
+                    break;
+            }
+        }
+
+        function updateStars() {
+            stars.forEach((star, index) => {
+                if (index < earnedStars) {
+                    star.classList.add('earned');
+                } else {
+                    star.classList.remove('earned');
+                }
+            });
+        }
+
+        function endRound() {
+    
+            canvas.style.pointerEvents = "none";
+
+            
+            totalRoundsCompleted++;
+            currentRound++;
+
+            if (currentRound > maxRounds) {
+                setTimeout(() => {
+                    alert("Great job! Game complete. Starting new game.");
+                    resetGame();
+                    canvas.style.pointerEvents = "auto";
+                }, 500);
+                return;
+            }
+
+        
+            roundChip.textContent = `${currentRound}/${maxRounds}`;
+            roundSmall.textContent = `${currentRound}/${maxRounds}`;
+
+        
+            setTimeout(() => {
+                // Hide result card
+                resultCard.classList.remove("show");
+
+                // Reset canvas for next round
+                ctx.clearRect(0,0,canvas.width/dpr,canvas.height/dpr);
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0,0,canvas.width/dpr,canvas.height/dpr);
+
+                pushHistory();
+
+                // Re-enable drawing
+                canvas.style.pointerEvents = "auto";
+            }, 2000);  // Wait 2 seconds so the child sees the result
+        }
+
+        // Simple shape analysis (demo)
+        analyzeBtn.addEventListener('click', async () => {
+            // Check if something is drawn
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const pixels = imageData.data;
+            let hasContent = false;
+
+            for (let i = 0; i < pixels.length; i += 4) {
+                if (pixels[i] < 250 || pixels[i+1] < 250 || pixels[i+2] < 250) {
+                    hasContent = true;
+                    break;
+                }
+            }
+
+            if (!hasContent) {
+                alert("Please draw something first!");
+                return;
+            }
+
+            // Loading state
+            analyzeBtn.disabled = true;
+            analyzeBtn.classList.add("loading");
+            analyzeBtn.textContent = "Analyzing...";
+
+            // Convert canvas to Blob (PNG)
+            const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+
+            // Prepare form data
+            const formData = new FormData();
+            formData.append("image", blob, "drawing.png");
+
+            try {
+                // 🚀 Send to Django backend
+                const response = await fetch("http://127.0.0.1:8000/predict/", {
+                    method: "POST",
+                    body: formData
+                });
+
+                try {
+                    const result = await response.json();
+                    console.log("Backend result:", result);
+
+                    const predictedShape = result.prediction;
+                    const predictedConf = result.score;
+
+                    predictionText.textContent = `I see a ${predictedShape}! 🎨`;
+                    confidenceText.textContent = "Nice drawing!";
+                    confidenceBar.style.width = `${predictedConf}%`;
+                    sum_score += (predictedConf)/10
+                    scoreSmall.textContent = `${sum_score}/${maxScore}`;
+
+                    resultCard.classList.add("show");
+                    endRound();
+                }
+                catch(error){
+
+                    console.error(error);
+                }
+
+            } catch (error) {
+                alert("Error analyzing drawing. Is Django running?");
+                console.error(error);
+            }
+
+            // Restore button
+            analyzeBtn.disabled = false;
+            analyzeBtn.classList.remove("loading");
+            analyzeBtn.textContent = "🔎 Analyze";
+        });
+        function resetGame() {
+            currentRound = 1;
+            totalScore = 0;
+            earnedStars = 0;
+            totalRoundsCompleted = 0;
+            sum_score=0
+            
+            roundChip.textContent = `${currentRound}/${maxRounds}`;
+            roundSmall.textContent = `${currentRound}/${maxRounds}`;
+            scoreChip.textContent = `${sum_score}/${maxScore}`;
+            scoreSmall.textContent = `${sum_score}/${maxScore}`;
+            scoreProgress.style.width = '0%';
+            chatbotText.textContent = '';
+            predictionText.textContent = 'Ready to draw something amazing? 🎨';
+            confidenceText.textContent = 'Draw your favorite shape and I\'ll tell you what I see!';
+            confidenceBar.style.width = '0%';
+            
+            // Reset stars
+            updateStars();
+            
+            // Clear canvas
+            ctx.clearRect(0,0,canvas.width/dpr,canvas.height/dpr);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0,0,canvas.width/dpr,canvas.height/dpr);
+            pushHistory();
+        }
+
+        // Pointer events
+        canvas.addEventListener('pointerdown', pointerDown);
+        canvas.addEventListener('pointermove', pointerMove);
+        window.addEventListener('pointerup', pointerUp);
+        window.addEventListener('resize', () => {
+            // resize keeping the content simple: we don't preserve drawing on resize to avoid complex scaling issues
+            resizeCanvas();
+        });
+
+        // Initialization
+        init();
+    </script>
+    
+    <!-- Calm background audio (muted by default to satisfy autoplay policies) -->
+    <audio id="bgAudio" loop preload="auto" crossorigin="anonymous" playsinline>
+        <!-- Primary local track -->
+        <source src="./Cooking-Show-chosic.com_.mp3" type="audio/mpeg">
+        <!-- Secondary local fallback -->
+        <source src="./calm.mp3" type="audio/mpeg">
+        <!-- Remote fallback -->
+        <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_1e2f7a5b5f.mp3?filename=calm-ambient-110997.mp3" type="audio/mpeg">
+    </audio>
+    <script>
+        (function(){
+            const audio = document.getElementById('bgAudio');
+            const toggle = document.getElementById('audioToggle');
+            if (!audio || !toggle) return;
+
+            // Start in muted state
+            audio.muted = true;
+            audio.volume = 0.2;
+
+            function updateLabel() {
+                toggle.textContent = audio.muted ? '🔇 Sound Off' : '🔈 Sound On';
+            }
+
+            toggle.addEventListener('click', async () => {
+                try {
+                    // If currently muted or paused, unmute and try to play
+                    if (audio.muted || audio.paused) {
+                        audio.muted = false;
+                        const playPromise = audio.play();
+                        if (playPromise && typeof playPromise.then === 'function') {
+                            await playPromise;
+                        }
+                    } else {
+                        // Mute (keeps playing but inaudible) to avoid additional play() on next click
+                        audio.muted = true;
+                    }
+                } catch (e) {
+                    // If play fails (e.g., network), keep muted
+                    audio.muted = true;
+                    console.warn('Audio play blocked or failed:', e);
+                    // Brief visual feedback on failure
+                    toggle.style.outline = '2px solid #ef4444';
+                    setTimeout(()=>{ toggle.style.outline = 'none'; }, 800);
+                } finally {
+                    updateLabel();
+                }
+            });
+
+            // Error diagnostics
+            audio.addEventListener('error', () => {
+                console.warn('Background audio failed to load (try placing calm.mp3 next to demo.html)');
+            });
+
+            updateLabel();
+        })();
+    </script>
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
