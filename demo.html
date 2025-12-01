@@ -516,15 +516,7 @@ input[type="range"]::-moz-range-thumb {
 
           setTimeout(() => {
 
-              // Advance round
-              currentRound++;
-
-              if (currentRound > maxRounds) {
-
-                showWinPopup();   
-                popupCelebrate(); 
-                return; 
-              }
+              
               // Clear canvas
               ctx.clearRect(0, 0, canvas.width, canvas.height);
               ctx.fillStyle = "#ffffff";
