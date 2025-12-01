@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Demo UI — Drawing Prediction</title>
+  <style>
+    /* Reset */
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter, 'Segoe UI', Roboto, Arial, sans-serif;background:#fff6d8}
+
+    /* Outer frame */
+    .frame{
+      width:900px; /* 1:1 visual square feel but wider for UI balance */
+      height:900px;
+      margin:18px auto;
+      border-radius:26px;
+      background:#ffdf80;
+      box-shadow:0 6px 0 rgba(0,0,0,0.85), inset 0 6px 0 rgba(255,255,255,0.06);
+      border:8px solid #111;
+      display:flex;
+      flex-direction:column;
+      padding:18px;
+      gap:12px;
+      position:relative;
+    }
+
+    /* Top toolbar */
+    .topbar{
+      display:flex;align-items:center;gap:18px;padding:8px 12px;border-radius:12px;
+      height:76px;
+      position:relative;
+    }
+
+    .star {
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+        object-fit: contain;
+        background: #ffdf80;
+        padding: 4px;
+        opacity: 0.25;
+        transition: opacity 0.4s ease, transform 0.2s ease;
+
+    }
+    .star.earned {
+    opacity: 1;             /* full visible star */
+    transform: scale(1.08); /* tiny pop effect */
+    }
+    .stars{display:flex;gap:20px;margin-left:6px}
+    
+    .star:active{transform:translateY(1px)}
+
+    .btn{padding:12px 26px;border-radius:26px;border:6px solid #111;font-weight:800;display:inline-flex;align-items:center;gap:8px}
+    
+    .draw-button {
+        display: inline-block;
+        padding: 10px 40px;
+        background: #ffdf80;        /* soft, friendly color */
+        border: 0px solid black;  /* prominent border */
+        border-radius: 20px;         /* rounded corners for child-friendly feel */
+        font-family: 'Comic Sans MS', 'Chalkboard SE', 'Arial', sans-serif; /* jolly font */
+        font-size: 32px;
+        font-weight: bold;
+        color: #333;
+        text-align: center;
+        margin-left: 20px;
+        transition: all 0.2s ease;
+        animation: pulse 1.5s infinite;
+        }
+
+
+        
+
+        /* Optional: make span prompt bold or colored differently */
+        #promptText {
+        color: #ff5722;
+        }
+
+        @keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05); /* slight enlargement */
+        }
+        100% {
+            transform: scale(1);
+        }
+        }
+
+    /* Main area */
+    .main{
+      display:flex;flex:1;gap:18px;align-items:stretch;
+    }
+
+    /* Canvas area resembles the image: outer orange frame, inner rounded drawing area */
+    .canvas-wrap{
+      flex:1;background:linear-gradient(#ffd37f,#ffd07a);border-radius:18px;padding:20px;border:0px solid #111;display:flex;flex-direction:column;justify-content:center;align-items:center;min-width:0;
+    }
+
+    .inner-frame{width:100%;height:100%;max-width:740px;max-height:620px;border-radius:18px;padding:18px;background:#ff8a2b;border-radius:16px;box-shadow:inset 0 6px 0 rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center}
+
+    canvas#draw{
+      background:#ffffff;border-radius:10px;width:100%;height:100%;max-width:640px;max-height:520px;display:block;border:6px solid #111;box-shadow:inset 0 3px 0 rgba(255,255,255,0.2);
+      touch-action:none;
+    }
+
+    /* Right toolbar */
+    .tools{
+      width:120px;display:flex;flex-direction:column;gap:18px;align-items:center;padding:12px;border-radius:12px;height:100%;
+    }
+
+    .tool-icon{width:80px;height:80px;border-radius:12px;background:transparent;display:flex;align-items:center;justify-content:center}
+    .pencil{background:linear-gradient(#ffd37f,#ffd37f)}
+    .eraser{background:linear-gradient(#ffc0c0,#ffc0c0)}
+
+    /* simple svg sized icons inside */
+    .slider-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;    /* desired vertical height */
+    width: 80px;      /* enough width for thumb */
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 300px;     /* visually becomes vertical height */
+    height: 40px;     /* track thickness */
+    background: #ffd37f;
+    border-radius: 25px;
+    border: 8px solid black;
+    outline: none;
+    transform: rotate(-90deg);
+    transform-origin: center center;
+}
+
+/* Thumb */
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 50px;
+    height: 50px;
+    background: #ff8a2b;
+    border-radius: 50%;
+    border: 8px solid black;
+    cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 50px;
+    height: 50px;
+    background: #ff8a2b;
+    border-radius: 50%;
+    border: 8px solid black;
+    cursor: pointer;
+}
+
+#winOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(3px);
+    display: none;          /* Hidden until triggered */
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* Popup box */
+.win-box {
+    position: relative;
+    background: #ffdf80;
+    padding: 40px;
+    border-radius: 28px;
+    border: 8px solid #111;
+    text-align: center;
+    width: 420px;
+    animation: popIn 0.35s ease-out;
+}
+
+/* Winning GIF */
+.win-gif {
+    width: 280px;
+    margin-bottom: 20px;
+}
+
+/* Winning text */
+.win-text {
+    font-size: 42px;
+    font-family: 'Comic Sans MS', cursive;
+    margin-bottom: 20px;
+    color: #ff5722;
+}
+
+/* Button */
+.replay-btn {
+    padding: 16px 34px;
+    border-radius: 24px;
+    font-size: 24px;
+    font-weight: 800;
+    border: 6px solid #111;
+    background: #fff0b5;
+    cursor: pointer;
+}
+
+.replay-btn:hover {
+    transform: scale(1.05);
+}
+
+/* Popup animation */
+@keyframes popIn {
+    0% { transform: scale(0.6); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+    
+
+    /* Bottom area */
+    .bottombar{display:flex;gap:18px;align-items:center;height:110px;padding:12px}
+    .prediction{transition:all 0.2s; flex-basis:220px;border-radius:18px;padding:22px 26px;border:6px solid #111;background:#fff0b5;font-weight:800;font-size:22px}
+
+    .prediction:hover{
+      scale: 1.03;
+      box-shadow: 0 0 5px #111;
+      }
+
+    .progress-wrap{flex:1;border-radius:18px;padding:12px;border:0px solid #111;background:#fff0b5;display:flex;align-items:center}
+    .progress{height:48px;border-radius:12px;background:linear-gradient(90deg,#25c455 0%, #baf2cb 60%);width:60%;border:6px solid #111}
+
+    
+
+    /* Responsive tweaks */
+    @media (max-width:1000px){.frame{width:92vw;height:92vw}}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+  <div class="frame" role="application" aria-label="Drawing UI demo">
+    <div class="topbar">
+        <div class="stars" title="rating">
+            <img src="assets/star.png" class="star" />
+            <img src="assets/star.png" class="star" />
+            <img src="assets/star.png" class="star" />
+            <img src="assets/star.png" class="star" />
+            <img src="assets/star.png" class="star" />
+        </div>
+
+        <div class="draw-button" id="drawButton">
+            DRAW <span id="promptText">SHAPE</span>
+        </div>
+    </div>
+
+    <div class="main">
+      <div class="canvas-wrap">
+        <div class="inner-frame">
+          <canvas id="draw" width="640" height="480"></canvas>
+          <img id="idleGif" src="assets/nukoPeekLeft.gif" style="position:absolute;right:-170px;top:50%;transform:translateY(-50%);width:160px;height:auto;display:none;">
+        </div>
+      </div>
+
+      <div class="tools" aria-hidden="false">
+        <div class="tool-icon pencil" id="pencilBtn" title="Pencil">
+            <img src="assets/pencil.png" style="width:50px; height:50px;" />
+        </div>
+        <div class="tool-icon eraser" id="eraserBtn" title="Eraser">
+            <img src="assets/eraser.png" style="width:50px; height:50px;" />
+        </div>
+
+        <div class="slider-wrap">
+          <input type="range" id="sizeRange" min="1" max="56" value="45">
+          
+        </div>
+
+        <div class="tool-icon" id="clearBtn" title="Clear">
+            <img src="assets/trash.png" style="width:50px; height:50px;" />
+        </div>
+      </div>
+    </div>
+
+    <div class="bottombar">
+      <button class="prediction" id="prediction">PREDICTION</button>
+      <div class="progress-wrap">
+        <div class="progress" id="progressBar"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // drawing app logic (pencil + eraser + stroke size + clear + submit simulation)
+    const canvas = document.getElementById('draw');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+    let tool = 'pencil';
+    let size = 8;
+    let last = {x:0,y:0};
+
+    let currentRound = 1;
+    const maxRounds = 5;
+    let starsEarned = 0;
+    
+
+    const stars = document.querySelectorAll('.star');
+    const shapePrompts = ["circle", "triangle", "hexagon", "square", "star"];
+
+    let idleTimer = null;
+    let idleTimeLimit = 10000;
+
+    function resetIdleTimer() {
+        clearTimeout(idleTimer);
+        document.getElementById("idleGif").style.display = "none";
+
+        idleTimer = setTimeout(() => {
+            document.getElementById("idleGif").style.display = "block";
+        }, idleTimeLimit);
+    }
+
+    function getRandomPrompt() {
+        return shapePrompts[Math.floor(Math.random() * shapePrompts.length)];
+    }
+
+    function setNewPrompt() {
+        const newPrompt = getRandomPrompt();
+        document.getElementById("promptText").textContent = newPrompt.toUpperCase();
+        return newPrompt;
+    }
+
+    function celebrate() {
+        const duration = 2000;      // 2 seconds
+        const end = Date.now() + duration;
+
+        (function frame() {
+            confetti({
+                particleCount: 8,
+                spread: 60,
+                origin: { x: Math.random(), y: Math.random() * 0.2 }
+            });
+
+            if (Date.now() < end) {
+                requestAnimationFrame(frame);
+            }
+        })();
+    }
+    
+
+    function fixDpi(){
+      const ratio = window.devicePixelRatio || 1;
+      const w = canvas.width;
+      const h = canvas.height;
+      canvas.width = w * ratio;
+      canvas.height = h * ratio;
+      canvas.style.width = w + 'px';
+      canvas.style.height = h + 'px';
+      ctx.scale(ratio, ratio);
+    }
+    fixDpi();
+
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = '#111';
+    ctx.lineWidth = size;
+
+    function getPos(e){
+      const rect = canvas.getBoundingClientRect();
+      if (e.touches) e = e.touches[0];
+      return {x: (e.clientX - rect.left), y: (e.clientY - rect.top)};
+    }
+
+    canvas.addEventListener('pointerdown', (e)=>{
+      drawing = true; last = getPos(e);
+    });
+    window.addEventListener('pointerup', ()=>drawing=false);
+    canvas.addEventListener('pointermove', (e)=>{
+      if(!drawing) return;
+      const p = getPos(e);
+      ctx.beginPath();
+      ctx.moveTo(last.x, last.y);
+      ctx.lineTo(p.x, p.y);
+      ctx.strokeStyle = (tool==='eraser') ? '#ffffff' : '#111';
+      ctx.lineWidth = size;
+      if(tool==='eraser') ctx.globalCompositeOperation = 'destination-out'; else ctx.globalCompositeOperation = 'source-over';
+      ctx.stroke();
+      last = p;
+    });
+    canvas.addEventListener("pointerdown", resetIdleTimer);
+    canvas.addEventListener("pointermove", resetIdleTimer);
+    canvas.addEventListener("pointerup", resetIdleTimer);
+    canvas.addEventListener("pointerleave", resetIdleTimer);
+
+    document.addEventListener("click", resetIdleTimer);
+
+    resetIdleTimer();
+
+    // tools
+    document.getElementById('pencilBtn').addEventListener('click', ()=>{tool='pencil'; document.getElementById('pencilBtn').style.outline='4px solid rgba(0,0,0,0.12)'; document.getElementById('eraserBtn').style.outline='';});
+    document.getElementById('eraserBtn').addEventListener('click', ()=>{tool='eraser'; document.getElementById('eraserBtn').style.outline='4px solid rgba(0,0,0,0.12)'; document.getElementById('pencilBtn').style.outline='';});
+
+    document.getElementById('sizeRange').addEventListener('input', (e)=>{size = parseInt(e.target.value,10)});
+    document.getElementById('clearBtn').addEventListener('click', ()=>{
+      // clear to the same blue background to simulate the reference UI background
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      // fill the representation background color (match the inner blue tone)
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0,0,canvas.width/ (window.devicePixelRatio||1), canvas.height/ (window.devicePixelRatio||1));
+    });
+    let currentPrompt = setNewPrompt();
+
+    // init canvas background
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,canvas.width/ (window.devicePixelRatio||1), canvas.height/ (window.devicePixelRatio||1));
+
+    // submit simulation: animate progress and set prediction text
+    document.getElementById('prediction').addEventListener('click', async () => {
+      const pred = document.getElementById('prediction');
+      const pbar = document.getElementById('progressBar');
+
+      pbar.style.transition = 'width 0.3s';
+      pbar.style.width = '0%';
+      pred.textContent = '...thinking';
+
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+      const formData = new FormData();
+      formData.append("image", blob, "drawing.png");
+
+      document.getElementById("replayBtn").addEventListener("click", () => {
+
+          hideWinPopup();
+
+          // Reset stars
+          starsEarned = 0;
+          stars.forEach(s => s.classList.remove("earned"));
+
+          // Reset rounds
+          currentRound = 1;
+
+          // Reset prompt
+          currentPrompt = setNewPrompt();
+
+          // Clear canvas
+          const ratio = window.devicePixelRatio || 1;
+          ctx.clearRect(0,0,canvas.width,canvas.height);
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0,0,canvas.width/ratio, canvas.height/ratio);
+          });
+
+
+      try {
+          const response = await fetch("http://127.0.0.1:8000/predict/", {
+              method: "POST",
+              body: formData
+          });
+
+          const result = await response.json();
+          console.log("Backend:", result);
+
+          const predictedShape = result.prediction;
+          const conf = result.score;
+
+          pred.textContent = predictedShape.toUpperCase();
+          pbar.style.transition = "width 1s ease";
+          pbar.style.width = conf + "%";
+
+          const correct = predictedShape.toLowerCase() === currentPrompt.toLowerCase();
+
+          if (correct) {
+              updateStars();
+
+              currentPrompt = setNewPrompt();
+
+              currentRound++;
+
+              if (currentRound > maxRounds) {
+                  showWinPopup();
+                  popupCelebrate();
+                  return;
+              }
+
+              await resetRound();
+          } 
+          else {
+              const ratio = window.devicePixelRatio || 1;
+              ctx.clearRect(0,0,canvas.width,canvas.height);
+              ctx.fillStyle = "#ffffff";
+              ctx.fillRect(0,0,canvas.width/ratio, canvas.height/ratio);
+
+              document.getElementById("prediction").textContent = "TRY AGAIN!";
+              document.getElementById("progressBar").style.width = "0%";
+
+              canvas.style.pointerEvents = "auto";
+          }
+
+      } catch (err) {
+          console.error(err);
+          pred.textContent = "ERROR";
+          pbar.style.width = "0%";
+          alert("Prediction failed — is Django running?");
+      }
+  });
+    
+    function showWinPopup() {
+        document.getElementById("winOverlay").style.display = "flex";
+        canvas.style.pointerEvents = "none"; 
+    }
+
+    function hideWinPopup() {
+        document.getElementById("winOverlay").style.display = "none";
+        canvas.style.pointerEvents = "auto"; 
+    }
+
+    function resetRound() {
+      return new Promise(resolve => {
+          canvas.style.pointerEvents = "none";
+
+          setTimeout(() => {
+
+              // Advance round
+              currentRound++;
+
+              if (currentRound > maxRounds) {
+
+                showWinPopup();   
+                popupCelebrate(); 
+                return; 
+              }
+              // Clear canvas
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+              ctx.fillStyle = "#ffffff";
+              ctx.fillRect(
+                  0,
+                  0,
+                  canvas.width / (devicePixelRatio || 1),
+                  canvas.height / (devicePixelRatio || 1)
+              );
+
+              // Reset UI
+              document.getElementById("prediction").textContent = "PREDICTION";
+              document.getElementById("progressBar").style.width = "0%";
+
+              canvas.style.pointerEvents = "auto";
+              
+              resolve();
+          }, 1500);
+        });
+    }
+
+    function popupCelebrate() {
+        const canvas = document.getElementById("popupConfetti");
+
+        const myConfetti = confetti.create(canvas, { resize: true });
+        const duration = 500;
+        const end = Date.now() + duration;
+
+        (function frame() {
+            myConfetti({
+                particleCount: 8,
+                spread: 60,
+                origin: {
+                    x: Math.random(),
+                    y: Math.random()
+                }
+            });
+            if (Date.now() < end) requestAnimationFrame(frame);
+        })();
+    }
+
+    function updateStars() {
+      if (starsEarned < stars.length) {
+          stars[starsEarned].classList.add("earned");
+          starsEarned++;
+      }
+    }
+
+    function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+    function randomPrediction(){
+      const items=['CIRCLE','STAR','PENCIL','CAT','HOUSE','TREE','HEART'];
+      return items[Math.floor(Math.random()*items.length)];
+    }
+
+    // shapes button (demo placeholder) — inserts a sample shape
+    document.getElementById('shapesBtn').addEventListener('click', ()=>{
+      // draw a demo star in the center
+      const w = canvas.width/(window.devicePixelRatio||1);
+      const h = canvas.height/(window.devicePixelRatio||1);
+      drawStar(w/2, h/2, 30, 70, 5);
+    });
+
+    function drawStar(cx,cy,innerR,outerR,points){
+      ctx.save();
+      ctx.beginPath();
+      for(let i=0;i<points*2;i++){
+        const angle = Math.PI * i / points;
+        const r = (i%2===0)?outerR:innerR;
+        const x = cx + Math.cos(angle)*r;
+        const y = cy + Math.sin(angle)*r;
+        if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      }
+      ctx.closePath();
+      ctx.fillStyle = '#ff6b3b';
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // tiny UX: clicking a star toggles highlight
+    document.querySelectorAll('.star').forEach(s=>s.addEventListener('click', (ev)=>{
+      s.style.filter = s.style.filter? '': 'drop-shadow(0 4px 0 rgba(0,0,0,0.2))';
+    }));
+
+    // ensure canvas repaints on window resize for hi-dpi accuracy
+    window.addEventListener('resize', ()=>{
+      // do nothing heavy — keep the look stable
+    });
+
+  </script>
+  <div id="winOverlay">
+
+    <!-- Confetti canvas ABOVE EVERYTHING -->
+    <canvas id="popupConfetti"
+        style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 999999; /* <--- THIS MAKES IT ON TOP */
+        ">
+    </canvas>
+
+    <div class="win-box">
+        <img src="assets/win.gif" class="win-gif">
+        <h1 class="win-text">YOU WON!</h1>
+        <button id="replayBtn" class="replay-btn">PLAY AGAIN</button>
+    </div>
+
+  </div>
+</body>
+</html>
