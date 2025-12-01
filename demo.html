@@ -21,6 +21,10 @@
         <div class="draw-button" id="drawButton">
             DRAW <span id="promptText">SHAPE</span>
         </div>
+          <div id="settingsBtn" 
+          style="margin-left:auto; cursor:pointer; padding:12px; border-radius:12px; background:#fff0b5; border:6px solid #111; font-weight:800;">
+          ⚙️ SETTINGS
+        </div>
         
     </div>
 
@@ -86,6 +90,72 @@
   <audio id="starEarned" src ="assets/point1.mp3" preload="auto"></audio>
   <audio id = "errorSound" src = "assets/error.mp3" preload="auto"></audio>
   <audio id="bgMusic" src="assets/bg_music.mp3" preload="auto" loop></audio>
+  <div id="settingsOverlay"
+     style="
+        position: fixed;
+        top: 0; left:0;
+        width:100%; height:100%;
+        background: rgba(0,0,0,0.6);
+        display:none;
+        align-items:center;
+        justify-content:center;
+        z-index:999999;">
+        
+    <div style="
+        background:#ffdf80;
+        padding:30px;
+        width:420px;
+        border-radius:28px;
+        border:8px solid #111;
+        text-align:center;">
+        
+        <h2 style="
+            font-family:'Comic Sans MS';
+            font-size:36px;
+            color:#ff5722;
+            margin-top:0;">
+            SETTINGS
+        </h2>
+
+        <!-- MUSIC TOGGLE -->
+        <div style="margin:20px 0;">
+            <label style="font-size:22px; font-weight:700;">
+                Music Volume
+            </label>
+            <input id="bgVolume" type="range" min="0" max="100" value="50"
+                   style="width:100%; margin-top:10px;">
+        </div>
+
+        <!-- MUTE SWITCH -->
+        <button id="muteMusicBtn"
+                style="
+                    padding:14px 24px;
+                    border-radius:20px;
+                    border:6px solid #111;
+                    background:#fff0b5;
+                    font-size:22px;
+                    font-weight:800;
+                    margin-bottom:20px;
+                    cursor:pointer;">
+            MUTE MUSIC
+        </button>
+
+        <br>
+
+        <!-- CLOSE -->
+        <button id="closeSettings"
+                style="
+                    padding:14px 32px;
+                    border-radius:22px;
+                    background:#ffffff;
+                    border:6px solid #111;
+                    font-size:22px;
+                    font-weight:800;
+                    cursor:pointer;">
+            CLOSE
+        </button>
+        </div>
+    </div>
   <script>
     // drawing app logic (pencil + eraser + stroke size + clear + submit simulation)
     const canvas = document.getElementById('draw');
@@ -278,6 +348,34 @@
 
   }); 
 
+  document.getElementById("settingsBtn").addEventListener("click", () => {
+    document.getElementById("settingsOverlay").style.display = "flex";
+  });
+
+  // CLOSE POPUP
+  document.getElementById("closeSettings").addEventListener("click", () => {
+      document.getElementById("settingsOverlay").style.display = "none";
+  });
+
+  // VOLUME CONTROL
+  document.getElementById("bgVolume").addEventListener("input", (e) => {
+      const v = e.target.value / 100;
+      const bg = document.getElementById("bgMusic");
+      bg.volume = v;
+  });
+
+  // MUTE/UNMUTE BUTTON
+  document.getElementById("muteMusicBtn").addEventListener("click", () => {
+      const bg = document.getElementById("bgMusic");
+
+      if (bg.muted) {
+          bg.muted = false;
+          document.getElementById("muteMusicBtn").textContent = "MUTE MUSIC";
+      } else {
+          bg.muted = true;
+          document.getElementById("muteMusicBtn").textContent = "UNMUTE MUSIC";
+      }
+  });
 
   document.getElementById("replayBtn").addEventListener("click", () => {
     

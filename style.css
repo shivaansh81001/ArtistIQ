@@ -48,10 +48,10 @@
     .draw-button {
         display: inline-block;
         padding: 10px 40px;
-        background: #ffdf80;        /* soft, friendly color */
-        border: 0px solid black;  /* prominent border */
-        border-radius: 20px;         /* rounded corners for child-friendly feel */
-        font-family: 'Comic Sans MS', 'Chalkboard SE', 'Arial', sans-serif; /* jolly font */
+        background: #ffdf80; 
+        border: 0px solid black; 
+        border-radius: 20px;
+        font-family: 'Comic Sans MS', 'Chalkboard SE', 'Arial', sans-serif; 
         font-size: 32px;
         font-weight: bold;
         color: #333;
@@ -61,7 +61,11 @@
         animation: pulse 1.5s infinite;
         }
 
-        
+        #bgVolume {
+            transform: none !important;
+            width: 100% !important;
+            height: 30px !important;
+        }
         #popupConfetti{
             pointer-events: none;
         }
