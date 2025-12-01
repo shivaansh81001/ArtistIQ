@@ -4,239 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Demo UI — Drawing Prediction</title>
-  <style>
-    /* Reset */
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter, 'Segoe UI', Roboto, Arial, sans-serif;background:#fff6d8}
-
-    /* Outer frame */
-    .frame{
-      width:900px; /* 1:1 visual square feel but wider for UI balance */
-      height:900px;
-      margin:18px auto;
-      border-radius:26px;
-      background:#ffdf80;
-      box-shadow:0 6px 0 rgba(0,0,0,0.85), inset 0 6px 0 rgba(255,255,255,0.06);
-      border:8px solid #111;
-      display:flex;
-      flex-direction:column;
-      padding:18px;
-      gap:12px;
-      position:relative;
-    }
-
-    /* Top toolbar */
-    .topbar{
-      display:flex;align-items:center;gap:18px;padding:8px 12px;border-radius:12px;
-      height:76px;
-      position:relative;
-    }
-
-    .star {
-        width: 60px;
-        height: 60px;
-        border-radius: 8px;
-        object-fit: contain;
-        background: #ffdf80;
-        padding: 4px;
-        opacity: 0.25;
-        transition: opacity 0.4s ease, transform 0.2s ease;
-
-    }
-    .star.earned {
-    opacity: 1;             /* full visible star */
-    transform: scale(1.08); /* tiny pop effect */
-    }
-    .stars{display:flex;gap:20px;margin-left:6px}
-    
-    .star:active{transform:translateY(1px)}
-
-    .btn{padding:12px 26px;border-radius:26px;border:6px solid #111;font-weight:800;display:inline-flex;align-items:center;gap:8px}
-    
-    .draw-button {
-        display: inline-block;
-        padding: 10px 40px;
-        background: #ffdf80;        /* soft, friendly color */
-        border: 0px solid black;  /* prominent border */
-        border-radius: 20px;         /* rounded corners for child-friendly feel */
-        font-family: 'Comic Sans MS', 'Chalkboard SE', 'Arial', sans-serif; /* jolly font */
-        font-size: 32px;
-        font-weight: bold;
-        color: #333;
-        text-align: center;
-        margin-left: 20px;
-        transition: all 0.2s ease;
-        animation: pulse 1.5s infinite;
-        }
-
-
-        
-
-        /* Optional: make span prompt bold or colored differently */
-        #promptText {
-        color: #ff5722;
-        }
-
-        @keyframes pulse {
-        0% {
-            transform: scale(1);
-        }
-        50% {
-            transform: scale(1.05); /* slight enlargement */
-        }
-        100% {
-            transform: scale(1);
-        }
-        }
-
-    /* Main area */
-    .main{
-      display:flex;flex:1;gap:18px;align-items:stretch;
-    }
-
-    /* Canvas area resembles the image: outer orange frame, inner rounded drawing area */
-    .canvas-wrap{
-      flex:1;background:linear-gradient(#ffd37f,#ffd07a);border-radius:18px;padding:20px;border:0px solid #111;display:flex;flex-direction:column;justify-content:center;align-items:center;min-width:0;
-    }
-
-    .inner-frame{width:100%;height:100%;max-width:740px;max-height:620px;border-radius:18px;padding:18px;background:#ff8a2b;border-radius:16px;box-shadow:inset 0 6px 0 rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center}
-
-    canvas#draw{
-      background:#ffffff;border-radius:10px;width:100%;height:100%;max-width:640px;max-height:520px;display:block;border:6px solid #111;box-shadow:inset 0 3px 0 rgba(255,255,255,0.2);
-      touch-action:none;
-    }
-
-    /* Right toolbar */
-    .tools{
-      width:120px;display:flex;flex-direction:column;gap:18px;align-items:center;padding:12px;border-radius:12px;height:100%;
-    }
-
-    .tool-icon{width:80px;height:80px;border-radius:12px;background:transparent;display:flex;align-items:center;justify-content:center}
-    .pencil{background:linear-gradient(#ffd37f,#ffd37f)}
-    .eraser{background:linear-gradient(#ffc0c0,#ffc0c0)}
-
-    /* simple svg sized icons inside */
-    .slider-wrap {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 200px;    /* desired vertical height */
-    width: 80px;      /* enough width for thumb */
-}
-
-input[type="range"] {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 300px;     /* visually becomes vertical height */
-    height: 40px;     /* track thickness */
-    background: #ffd37f;
-    border-radius: 25px;
-    border: 8px solid black;
-    outline: none;
-    transform: rotate(-90deg);
-    transform-origin: center center;
-}
-
-/* Thumb */
-input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 50px;
-    height: 50px;
-    background: #ff8a2b;
-    border-radius: 50%;
-    border: 8px solid black;
-    cursor: pointer;
-}
-
-input[type="range"]::-moz-range-thumb {
-    width: 50px;
-    height: 50px;
-    background: #ff8a2b;
-    border-radius: 50%;
-    border: 8px solid black;
-    cursor: pointer;
-}
-
-#winOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.75);
-    backdrop-filter: blur(3px);
-    display: none;          /* Hidden until triggered */
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-}
-
-/* Popup box */
-.win-box {
-    position: relative;
-    background: #ffdf80;
-    padding: 40px;
-    border-radius: 28px;
-    border: 8px solid #111;
-    text-align: center;
-    width: 420px;
-    animation: popIn 0.35s ease-out;
-}
-
-/* Winning GIF */
-.win-gif {
-    width: 280px;
-    margin-bottom: 20px;
-}
-
-/* Winning text */
-.win-text {
-    font-size: 42px;
-    font-family: 'Comic Sans MS', cursive;
-    margin-bottom: 20px;
-    color: #ff5722;
-}
-
-/* Button */
-.replay-btn {
-    padding: 16px 34px;
-    border-radius: 24px;
-    font-size: 24px;
-    font-weight: 800;
-    border: 6px solid #111;
-    background: #fff0b5;
-    cursor: pointer;
-}
-
-.replay-btn:hover {
-    transform: scale(1.05);
-}
-
-/* Popup animation */
-@keyframes popIn {
-    0% { transform: scale(0.6); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
-}
-    
-
-    /* Bottom area */
-    .bottombar{display:flex;gap:18px;align-items:center;height:110px;padding:12px}
-    .prediction{transition:all 0.2s; flex-basis:220px;border-radius:18px;padding:22px 26px;border:6px solid #111;background:#fff0b5;font-weight:800;font-size:22px}
-
-    .prediction:hover{
-      scale: 1.03;
-      box-shadow: 0 0 5px #111;
-      }
-
-    .progress-wrap{flex:1;border-radius:18px;padding:12px;border:0px solid #111;background:#fff0b5;display:flex;align-items:center}
-    .progress{height:48px;border-radius:12px;background:linear-gradient(90deg,#25c455 0%, #baf2cb 60%);width:60%;border:6px solid #111}
-
-    
-
-    /* Responsive tweaks */
-    @media (max-width:1000px){.frame{width:92vw;height:92vw}}
-  </style>
+  <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
@@ -253,6 +21,7 @@ input[type="range"]::-moz-range-thumb {
         <div class="draw-button" id="drawButton">
             DRAW <span id="promptText">SHAPE</span>
         </div>
+        
     </div>
 
     <div class="main">
@@ -290,6 +59,33 @@ input[type="range"]::-moz-range-thumb {
     </div>
   </div>
 
+  
+  <div id="winOverlay" style="display: none;">
+
+    <!-- Confetti canvas ABOVE EVERYTHING -->
+    <canvas id="popupConfetti"
+        style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 99999; /* <--- THIS MAKES IT ON TOP */
+        ">
+    </canvas>
+
+    <div class="win-box">
+        <img src="assets/win.gif" class="win-gif">
+        <h1 class="win-text">YOU WON!</h1>
+        <button id="replayBtn" class="replay-btn">PLAY AGAIN</button>
+    </div>
+
+  </div>
+  <audio id="winSound" src="assets/celebration.mp3" preload="auto"></audio>
+  <audio id="starEarned" src ="assets/point1.mp3" preload="auto"></audio>
+  <audio id = "errorSound" src = "assets/error.mp3" preload="auto"></audio>
+  <audio id="bgMusic" src="assets/bg_music.mp3" preload="auto" loop></audio>
   <script>
     // drawing app logic (pencil + eraser + stroke size + clear + submit simulation)
     const canvas = document.getElementById('draw');
@@ -414,100 +210,113 @@ input[type="range"]::-moz-range-thumb {
 
     // submit simulation: animate progress and set prediction text
     document.getElementById('prediction').addEventListener('click', async () => {
-      const pred = document.getElementById('prediction');
-      const pbar = document.getElementById('progressBar');
 
-      pbar.style.transition = 'width 0.3s';
-      pbar.style.width = '0%';
-      pred.textContent = '...thinking';
+    const pred = document.getElementById('prediction');
+    const pbar = document.getElementById('progressBar');
 
-      const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
-      const formData = new FormData();
-      formData.append("image", blob, "drawing.png");
+    pbar.style.transition = 'width 0.3s';
+    pbar.style.width = '0%';
+    pred.textContent = '...thinking';
 
-      document.getElementById("replayBtn").addEventListener("click", () => {
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+    const formData = new FormData();
+    formData.append("image", blob, "drawing.png");
 
-          hideWinPopup();
+    try {
+        const response = await fetch("http://127.0.0.1:8000/predict/", {
+            method: "POST",
+            body: formData
+        });
 
-          // Reset stars
-          starsEarned = 0;
-          stars.forEach(s => s.classList.remove("earned"));
+        const result = await response.json();
+        console.log("Backend:", result);
 
-          // Reset rounds
-          currentRound = 1;
+        const predictedShape = result.prediction;
+        const conf = result.score;
 
-          // Reset prompt
-          currentPrompt = setNewPrompt();
+        pred.textContent = predictedShape.toUpperCase();
+        pbar.style.transition = "width 1s ease";
+        pbar.style.width = conf + "%";
 
-          // Clear canvas
-          const ratio = window.devicePixelRatio || 1;
-          ctx.clearRect(0,0,canvas.width,canvas.height);
-          ctx.fillStyle = "#ffffff";
-          ctx.fillRect(0,0,canvas.width/ratio, canvas.height/ratio);
-          });
+        const correct = predictedShape.toLowerCase() === currentPrompt.toLowerCase();
+
+    if (correct) {
+
+        updateStars();
+        currentPrompt = setNewPrompt();
+        currentRound++;
+
+        if (currentRound > maxRounds) {
+            showWinPopup();
+            popupCelebrate();
+            return;
+        }
+
+        await resetRound();
+    } else {
+        const ratio = devicePixelRatio || 1;
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0,0,canvas.width/ratio,canvas.height/ratio);
+
+        pred.textContent = "TRY AGAIN!";
+        pbar.style.width = "0%";
+
+        const error = document.getElementById("errorSound");
+        error.currentTime = 0;
+        error.play().catch(e => console.log("Audio blocked:", e));
+
+        canvas.style.pointerEvents = "auto";
+    }
+
+    } catch (err) {
+        console.error(err);
+        pred.textContent = "ERROR";
+        pbar.style.width = "0%";
+        alert("Prediction failed — is Django running?");
+    }
+
+  }); 
 
 
-      try {
-          const response = await fetch("http://127.0.0.1:8000/predict/", {
-              method: "POST",
-              body: formData
-          });
+  document.getElementById("replayBtn").addEventListener("click", () => {
+    
+    // Hide popup
+    hideWinPopup();
 
-          const result = await response.json();
-          console.log("Backend:", result);
+    // Reset game state
+    currentRound = 1;
+    starsEarned = 0;
 
-          const predictedShape = result.prediction;
-          const conf = result.score;
+    // Reset stars UI
+    stars.forEach(s => s.classList.remove("earned"));
 
-          pred.textContent = predictedShape.toUpperCase();
-          pbar.style.transition = "width 1s ease";
-          pbar.style.width = conf + "%";
+    // Reset prompt
+    currentPrompt = setNewPrompt();
 
-          const correct = predictedShape.toLowerCase() === currentPrompt.toLowerCase();
+    // Clear canvas
+    const ratio = devicePixelRatio || 1;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0,0,canvas.width/ratio,canvas.height/ratio);
 
-          if (correct) {
-              updateStars();
+    // Reset prediction button + progress
+    document.getElementById("prediction").textContent = "PREDICTION";
+    document.getElementById("progressBar").style.width = "0%";
 
-              currentPrompt = setNewPrompt();
-
-              currentRound++;
-
-              if (currentRound > maxRounds) {
-                  showWinPopup();
-                  popupCelebrate();
-                  return;
-              }
-
-              await resetRound();
-          } 
-          else {
-              const ratio = window.devicePixelRatio || 1;
-              ctx.clearRect(0,0,canvas.width,canvas.height);
-              ctx.fillStyle = "#ffffff";
-              ctx.fillRect(0,0,canvas.width/ratio, canvas.height/ratio);
-
-              document.getElementById("prediction").textContent = "TRY AGAIN!";
-              document.getElementById("progressBar").style.width = "0%";
-
-              canvas.style.pointerEvents = "auto";
-          }
-
-      } catch (err) {
-          console.error(err);
-          pred.textContent = "ERROR";
-          pbar.style.width = "0%";
-          alert("Prediction failed — is Django running?");
-      }
   });
+  
     
     function showWinPopup() {
-        document.getElementById("winOverlay").style.display = "flex";
-        canvas.style.pointerEvents = "none"; 
+      const win = document.getElementById("winOverlay");
+      win.style.display = "flex";
+      win.style.pointerEvents = "auto";
     }
 
     function hideWinPopup() {
-        document.getElementById("winOverlay").style.display = "none";
-        canvas.style.pointerEvents = "auto"; 
+      const win = document.getElementById("winOverlay");
+      win.style.display = "none";
+      win.style.pointerEvents = "none"; 
     }
 
     function resetRound() {
@@ -539,29 +348,37 @@ input[type="range"]::-moz-range-thumb {
     }
 
     function popupCelebrate() {
-        const canvas = document.getElementById("popupConfetti");
 
-        const myConfetti = confetti.create(canvas, { resize: true });
-        const duration = 500;
-        const end = Date.now() + duration;
+      const winSound = document.getElementById("winSound");
+      winSound.currentTime = 0; 
+      winSound.play().catch(e => console.log("Audio blocked:", e));
+      const canvas = document.getElementById("popupConfetti");
 
-        (function frame() {
-            myConfetti({
-                particleCount: 8,
-                spread: 60,
-                origin: {
-                    x: Math.random(),
-                    y: Math.random()
-                }
-            });
-            if (Date.now() < end) requestAnimationFrame(frame);
-        })();
+      const myConfetti = confetti.create(canvas, { resize: true });
+      const duration = 500;
+      const end = Date.now() + duration;
+
+      (function frame() {
+          myConfetti({
+              particleCount: 8,
+              spread: 60,
+              origin: {
+                  x: Math.random(),
+                  y: Math.random()
+              }
+          });
+          if (Date.now() < end) requestAnimationFrame(frame);
+      })();
     }
 
     function updateStars() {
       if (starsEarned < stars.length) {
           stars[starsEarned].classList.add("earned");
+
           starsEarned++;
+          const bonuspoint = document.getElementById("starEarned");
+          bonuspoint.currentTime = 0; 
+          bonuspoint.play().catch(e => console.log("Audio blocked:", e));
       }
     }
 
@@ -606,27 +423,5 @@ input[type="range"]::-moz-range-thumb {
     });
 
   </script>
-  <div id="winOverlay">
-
-    <!-- Confetti canvas ABOVE EVERYTHING -->
-    <canvas id="popupConfetti"
-        style="
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            pointer-events: none;
-            z-index: 999999; /* <--- THIS MAKES IT ON TOP */
-        ">
-    </canvas>
-
-    <div class="win-box">
-        <img src="assets/win.gif" class="win-gif">
-        <h1 class="win-text">YOU WON!</h1>
-        <button id="replayBtn" class="replay-btn">PLAY AGAIN</button>
-    </div>
-
-  </div>
 </body>
 </html>
