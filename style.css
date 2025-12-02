@@ -212,6 +212,8 @@ input[type="range"]::-moz-range-thumb {
     cursor: pointer;
 }
 
+
+
 .replay-btn:hover {
     transform: scale(1.05);
 }
@@ -250,8 +252,13 @@ input[type="range"]::-moz-range-thumb {
         align-items: center;
         gap: 8px;
         padding: 5px;
-        pointer-events: none; 
+        pointer-events: auto; 
         transform: scaleX(-1);
+    }
+    .gif-container #helpBtn {
+        position: relative; 
+        z-index: 1000; 
+        pointer-events: auto;
     }
     
     .dialog-box {

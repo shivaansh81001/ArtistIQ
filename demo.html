@@ -14,6 +14,21 @@
   <div class="gif-container">
     <div class="dialog-box" id="gifDialog">Let's play!</div>
     <img id="gameGif" src="assets/idle.gif" alt="Character GIF">
+    <button id="helpBtn"
+        style="
+            margin-top: 10px;
+            padding: 10px 20px;
+            border-radius: 16px;
+            background:#fff8c0;
+            border:4px solid #111;
+            font-size:18px;
+            font-weight:700;
+            cursor:pointer;
+            display:none;
+            transform: scaleX(-1);
+        ">
+        HELP
+    </button>
   </div>
   <div class="frame" role="application" aria-label="Drawing UI demo">
     <div class="topbar">
@@ -38,6 +53,15 @@
     <div class="main">
       <div class="canvas-wrap">
         <div class="inner-frame">
+          <canvas id="hintOverlay"
+            width="640"
+            height="480"
+            style="
+                position:absolute;
+                pointer-events:none;
+                top:0; left:0;
+            ">
+          </canvas>
           <canvas id="draw" width="640" height="480"></canvas>
           <img id="idleGif" src="assets/nukoPeekLeft.gif" style="position:absolute;right:-170px;top:50%;transform:translateY(-50%);width:160px;height:auto;display:none;">
         </div>
@@ -97,6 +121,7 @@
   <audio id="starEarned" src ="assets/point1.mp3" preload="auto"></audio>
   <audio id = "errorSound" src = "assets/error.mp3" preload="auto"></audio>
   <audio id="bgMusic" src="assets/bg_music.mp3" preload="auto" loop></audio>
+  <audio id="applause" src="assets/applause.mp3" preload="auto"></audio>
   <div id="settingsOverlay"
      style="
         position: fixed;
@@ -133,6 +158,20 @@
                    style="width:100%; margin-top:10px;">
         </div>
 
+        <div style="margin:20px 0;">
+          <label style="font-size:22px; font-weight:700;">Celebration Sound</label>
+          <input id="soundLevel" type="range" min="0" max="2" value="2" style="width:100%; margin-top:10px;transform:none;">
+          <div id="soundLevelLabel">High</div>
+        </div>
+
+        <div style="margin:20px 0;">
+          <label style="font-size:22px; font-weight:700;">
+              Visual Effects
+          </label>
+          <input id="visualLevel" type="range" min="0" max="2" value="2" 
+                 style="width:100%; margin-top:10px;transform:none;">
+          <div id="visualLevelLabel" style="margin-top:6px; font-size:18px; font-weight:600;">High</div>
+        </div>
         <!-- MUTE SWITCH -->
         <button id="muteMusicBtn"
                 style="
@@ -163,6 +202,7 @@
         </button>
         </div>
     </div>
+    
     <div id="welcomeOverlay">
       <div id="welcomeContent">
           <img id="welcomeGif" src="assets/welcome.gif">

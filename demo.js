@@ -4,6 +4,7 @@ const canvas = document.getElementById('draw');
     let tool = 'pencil';
     let size = 8;
     let last = {x:0,y:0};
+    let hintVisible = false;
 
     let currentRound = 1;
     const maxRounds = 5;
@@ -18,6 +19,55 @@ const canvas = document.getElementById('draw');
 
     const gameGif = document.getElementById("gameGif");
     const gifDialog = document.getElementById("gifDialog");
+
+    let visualLevel = 2; // default high
+    const visualSlider = document.getElementById("visualLevel");
+    const visualLabel = document.getElementById("visualLevelLabel");
+
+    visualSlider.addEventListener("input", (e) => {
+        visualLevel = parseInt(e.target.value);
+        const labels = ["Low", "Medium", "High"];
+        visualLabel.textContent = labels[visualLevel];
+    });
+
+    let soundLevel = 2; // default high
+    const soundSlider = document.getElementById("soundLevel");
+    const soundLabel = document.getElementById("soundLevelLabel");
+
+    soundSlider.addEventListener("input", (e) => {
+        soundLevel = parseInt(e.target.value);
+        const labels = ["Off", "Applause", "Applause + Win"];
+        soundLabel.textContent = labels[soundLevel];
+    });
+
+    function popupCelebrate() {
+        if (visualLevel === 0) return;
+    
+        const winSound = document.getElementById("winSound");
+        const applauseSound = document.getElementById("applause");
+    
+        if (soundLevel === 1) {
+            if (applauseSound) { applauseSound.currentTime = 0; applauseSound.play().catch(e=>console.log(e)); }
+        } else if (soundLevel === 2) {
+            if (applauseSound) { applauseSound.currentTime = 0; applauseSound.play().catch(e=>console.log(e)); }
+            if (winSound) { winSound.currentTime = 0; winSound.play().catch(e=>console.log(e)); }
+        }
+    
+        // Confetti
+        const canvas = document.getElementById("popupConfetti");
+        const myConfetti = confetti.create(canvas, { resize: true });
+    
+        let duration, particleCount, spread;
+        if (visualLevel === 1) { duration = 1000; particleCount = 20; spread = 45; }
+        else { duration = 2000; particleCount = 50; spread = 90; }
+    
+        const end = Date.now() + duration;
+    
+        (function frame() {
+            myConfetti({ particleCount, spread, origin: { x: Math.random(), y: Math.random() } });
+            if (Date.now() < end) requestAnimationFrame(frame);
+        })();
+    }
 
     function showWelcomeGif() {
         gameGif.src = "assets/welcome.gif";  
@@ -42,6 +92,7 @@ const canvas = document.getElementById('draw');
         gameGif.src = "assets/nope.gif";
         let msg = `That is a good ${predictedShape.toUpperCase()} but can you draw a ${currentPrompt.toUpperCase()}`
         gifDialog.textContent = msg;
+        document.getElementById("helpBtn").style.display = "block";
         setTimeout(() => {
           showIdleGif();
         }, 4000);
@@ -72,16 +123,29 @@ const canvas = document.getElementById('draw');
     }
 
     function celebrate() {
-        const duration = 2000;      // 2 seconds
+        if (visualLevel === 0) return; // no confetti
+    
+        let duration, particleCount, spread;
+    
+        if (visualLevel === 1) {       // medium
+            duration = 1000;
+            particleCount = 20;
+            spread = 45;
+        } else {                        // high
+            duration = 2000;
+            particleCount = 50;
+            spread = 90;
+        }
+    
         const end = Date.now() + duration;
-
+    
         (function frame() {
             confetti({
-                particleCount: 8,
-                spread: 60,
+                particleCount: particleCount,
+                spread: spread,
                 origin: { x: Math.random(), y: Math.random() * 0.2 }
             });
-
+    
             if (Date.now() < end) {
                 requestAnimationFrame(frame);
             }
@@ -285,6 +349,7 @@ const canvas = document.getElementById('draw');
   });
   
     
+
     function showWinPopup() {
       const win = document.getElementById("winOverlay");
       win.style.display = "flex";
@@ -298,6 +363,7 @@ const canvas = document.getElementById('draw');
     }
 
     function resetRound() {
+        document.getElementById("helpBtn").style.display = "none";
       return new Promise(resolve => {
           canvas.style.pointerEvents = "none";
 
@@ -325,29 +391,7 @@ const canvas = document.getElementById('draw');
         });
     }
 
-    function popupCelebrate() {
-
-      const winSound = document.getElementById("winSound");
-      winSound.currentTime = 0; 
-      winSound.play().catch(e => console.log("Audio blocked:", e));
-      const canvas = document.getElementById("popupConfetti");
-
-      const myConfetti = confetti.create(canvas, { resize: true });
-      const duration = 500;
-      const end = Date.now() + duration;
-
-      (function frame() {
-          myConfetti({
-              particleCount: 8,
-              spread: 60,
-              origin: {
-                  x: Math.random(),
-                  y: Math.random()
-              }
-          });
-          if (Date.now() < end) requestAnimationFrame(frame);
-      })();
-    }
+    
 
     function updateStars() {
       if (starsEarned < stars.length) {
@@ -389,6 +433,46 @@ const canvas = document.getElementById('draw');
       ctx.restore();
     }
 
+    function drawHintStroke(xs, ys) {
+        const overlay = document.getElementById("hintOverlay");
+        const hctx = overlay.getContext("2d");
+    
+        hctx.clearRect(0,0,overlay.width,overlay.height);
+    
+        hctx.strokeStyle = "rgba(255,0,0,0.55)";
+        hctx.lineWidth = 6;
+        hctx.lineJoin = "round";
+        hctx.lineCap = "round";
+    
+        hctx.beginPath();
+    
+        for (let i = 0; i < xs.length; i++) {
+            if (i === 0) hctx.moveTo(xs[i], ys[i]);
+            else hctx.lineTo(xs[i], ys[i]);
+        }
+    
+        hctx.stroke();
+    }
+    document.getElementById("helpBtn").addEventListener("click", async () => {
+        const overlay = document.getElementById("hintOverlay");
+        const hctx = overlay.getContext("2d");
+    
+        if (hintVisible) {
+            hctx.clearRect(0,0,overlay.width,overlay.height);
+            hintVisible = false;
+            return;
+        }
+    
+        const stroke = await loadShapeStroke(currentPrompt.toLowerCase());
+        const xs = stroke[0];
+        const ys = stroke[1];
+    
+        drawHintStroke(xs, ys);
+        hintVisible = true;
+    });
+    
+
+
     document.querySelectorAll('.star').forEach(s=>s.addEventListener('click', (ev)=>{
       s.style.filter = s.style.filter? '': 'drop-shadow(0 4px 0 rgba(0,0,0,0.2))';
     }));
@@ -405,11 +489,10 @@ const canvas = document.getElementById('draw');
             currentPrompt = setNewPrompt();
             showIdleGif();
     
-            setTimeout(() => {
-                const overlay = document.getElementById("welcomeOverlay");
-                if (overlay) overlay.remove();
-            }, 800);
-    
+            const overlay = document.getElementById("welcomeOverlay");
+            if (overlay) {
+                overlay.style.display = "none"; // hide overlay
+            }
         }, 3000);
     }
     
