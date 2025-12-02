@@ -1,5 +1,5 @@
 *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter, 'Segoe UI', Roboto, Arial, sans-serif;background:#fff6d8}
+    html,body{font-family:"Tiny5",sans-serif;height:100%;margin:0;font-family:Inter, 'Segoe UI', Roboto, Arial, sans-serif;background:#fff6d8}
 
     /* Outer frame */
     .frame{
@@ -173,6 +173,8 @@ input[type="range"]::-moz-range-thumb {
     z-index: 9999;
 }
 
+
+
 /* Popup box */
 .win-box {
     position: relative;
@@ -237,3 +239,84 @@ input[type="range"]::-moz-range-thumb {
 
     /* Responsive tweaks */
     @media (max-width:1000px){.frame{width:92vw;height:92vw}}
+
+
+    .gif-container {
+        position: absolute;
+        top: 30%;
+        left: 150px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 5px;
+        pointer-events: none; 
+        transform: scaleX(-1);
+    }
+    
+    .dialog-box {
+        background: #ffffff;
+        border: 2px solid #111;
+        height: auto;
+        border-radius: 20px;
+        padding: 8px 14px;
+        font-family: "Tiny5", sans-serif;
+        font-weight: 700;
+        font-size: 18px;
+        transform: scaleX(-1);
+        color: #333;
+        max-width: 250px;
+
+        text-align: center;
+    }
+    
+    #gameGif {
+        width: 250px;
+        height: auto;
+    }
+
+    #welcomeOverlay {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0,0,0,0.65);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 999999; /* above everything */
+        animation: fadeOut 0.6s ease forwards;
+        animation-delay: 2.8s;
+        pointer-events: none; /* prevent blocking */
+        opacity: 1;
+    }
+    
+    /* Hide after fade completes */
+    @keyframes fadeOut {
+        to { opacity: 0; }
+    }
+    
+    #welcomeContent {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+    }
+    
+    /* GIF */
+    #welcomeGif {
+        width: 200px;
+        height: auto;
+    }
+    
+    /* Welcome message */
+    #welcomeText {
+        background: #ffdf80;
+        border: 6px solid #111;
+        border-radius: 22px;
+        padding: 14px 20px;
+        font-family: "Tiny5", sans-serif;
+        font-size: 26px;
+        color: #333;
+        text-align: center;
+    }
