@@ -5,16 +5,58 @@ import os
 import torch
 from torchvision import transforms
 from PIL import Image
-from .model import CNN_basic
+
+import os
+import numpy as np
+import random
+import math
+import json
+from functools import partial
+from PIL import Image
+import pytorch_lightning as pl
+
+from tqdm.notebook import tqdm
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.utils.data as data
+import torch.optim as optim
+
+import torchvision
+from torchvision import transforms,datasets
+
+#from .model import CNN_basic
+from .vit_model import ViT
+
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 CLASSES = ["circle","hexagon","square","star","triangle"]
 
-MODEL_PATH = os.path.join(os.path.dirname(__file__), "cnn_basic.pt")
+#MODEL_PATH = os.path.join(os.path.dirname(__file__), "cnn_basic.pt")
 
-model = CNN_basic(num_classes=5).to(device)
-model.load_state_dict(torch.load(MODEL_PATH, weights_only=True))
+#model = CNN_basic(num_classes=5).to(device)
+#model.load_state_dict(torch.load(MODEL_PATH, weights_only=True))
+
+
+model_kwargs = {
+    'embed_dim': 256,
+    'hidden_dim': 512,
+    'num_heads': 8,
+    'num_layers': 6,
+    'patch_size': 4,
+    'num_channels': 1,
+    'num_patches': 49,
+    'num_classes': 5,
+    'dropout': 0.2
+}
+
+model = ViT(model_kwargs).to(device)
+state_dict = torch.load(os.path.join(os.path.dirname(__file__), "vit_model.pt"))
+model.load_state_dict(state_dict, strict=True)
+
+
 model.eval()
 
 transform = transforms.Compose([

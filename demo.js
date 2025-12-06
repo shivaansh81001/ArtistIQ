@@ -89,13 +89,20 @@ const canvas = document.getElementById('draw');
       }
 
     function showLoseGif(currentPrompt,predictedShape) {
-        gameGif.src = "assets/nope.gif";
-        let msg = `That is a good ${predictedShape.toUpperCase()} but can you draw a ${currentPrompt.toUpperCase()}`
-        gifDialog.textContent = msg;
-        document.getElementById("helpBtn").style.display = "block";
-        setTimeout(() => {
-          showIdleGif();
-        }, 4000);
+        if (currentPrompt === null && predictedShape===null){
+            gameGif.src = "assets/nope.gif";
+            let msg = `HMMM .. I'm not quite sure, lets try again.`
+            gifDialog.textContent = msg;
+        } else{
+            gameGif.src = "assets/nope.gif";
+            let msg = `That is a good ${predictedShape.toUpperCase()} but can you draw a ${currentPrompt.toUpperCase()}`
+            gifDialog.textContent = msg;
+        }
+            document.getElementById("helpBtn").style.display = "block";
+            setTimeout(() => {
+            showIdleGif();
+            }, 4000);
+        
     }
 
     function showIdleGif() {
@@ -250,7 +257,7 @@ const canvas = document.getElementById('draw');
 
         const correct = predictedShape.toLowerCase() === currentPrompt.toLowerCase();
 
-    if (correct) {
+    if (correct && conf>=85) {
 
         updateStars();
         showWinGif();
@@ -264,7 +271,26 @@ const canvas = document.getElementById('draw');
         }
 
         await resetRound();
-    } else {
+    
+    
+        
+    }else if (correct && conf<85){
+        showLoseGif(null,null)
+        const ratio = devicePixelRatio || 1;
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0,0,canvas.width/ratio,canvas.height/ratio);
+
+        pred.textContent = "TRY AGAIN!";
+        pbar.style.width = "0%";
+        const error = document.getElementById("errorSound");
+        error.currentTime = 0;
+        error.play().catch(e => console.log("Audio blocked:", e));
+
+        canvas.style.pointerEvents = "auto";
+
+
+    }  else {
         const ratio = devicePixelRatio || 1;
         ctx.clearRect(0,0,canvas.width,canvas.height);
         ctx.fillStyle = "#ffffff";
