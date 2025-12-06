@@ -257,7 +257,7 @@ const canvas = document.getElementById('draw');
 
         const correct = predictedShape.toLowerCase() === currentPrompt.toLowerCase();
 
-    if (correct && conf>=85) {
+    if (correct && conf>=89) {
 
         updateStars();
         showWinGif();
@@ -274,7 +274,7 @@ const canvas = document.getElementById('draw');
     
     
         
-    }else if (correct && conf<85){
+    }else if (correct && conf<89){
         showLoseGif(null,null)
         const ratio = devicePixelRatio || 1;
         ctx.clearRect(0,0,canvas.width,canvas.height);
