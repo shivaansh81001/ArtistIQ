@@ -32,7 +32,7 @@ from .vit_model import ViT
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-CLASSES = ["circle","hexagon","square","star","triangle"]
+CLASSES = ["circle","hexagon","square","star","triangle","waste"]
 
 #MODEL_PATH = os.path.join(os.path.dirname(__file__), "cnn_basic.pt")
 
@@ -48,12 +48,12 @@ model_kwargs = {
     'patch_size': 4,
     'num_channels': 1,
     'num_patches': 49,
-    'num_classes': 5,
+    'num_classes': 6,
     'dropout': 0.2
 }
 
 model = ViT(model_kwargs).to(device)
-state_dict = torch.load(os.path.join(os.path.dirname(__file__), "vit_model.pt"))
+state_dict = torch.load(os.path.join(os.path.dirname(__file__), "vit_model_waste.pt"))
 model.load_state_dict(state_dict, strict=True)
 
 

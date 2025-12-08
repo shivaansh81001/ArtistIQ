@@ -274,7 +274,7 @@ const canvas = document.getElementById('draw');
     
     
         
-    }else if (correct && conf<89){
+    }else if (predictedShape.toLowerCase()==="waste" || conf<89){
         showLoseGif(null,null)
         const ratio = devicePixelRatio || 1;
         ctx.clearRect(0,0,canvas.width,canvas.height);
