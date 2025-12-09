@@ -1,0 +1,7 @@
+Django
+torch
+torchvision
+pillow
+numpy
+pytorch-lightning
+tqdm
