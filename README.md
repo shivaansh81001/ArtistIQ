@@ -2,5 +2,5 @@
 
 reference - https://nukochannel.neocities.org/reactions
 
-<img width="1876" height="910" alt="image" src="https://github.com/user-attachments/assets/4b6b674d-8492-498c-88c0-f7402f3a707a" />
 
+<img width="1898" height="939" alt="image" src="https://github.com/user-attachments/assets/8bd7b2de-87b2-4b2b-b5dd-d84b51a90f0a" />
