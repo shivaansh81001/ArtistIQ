@@ -25,12 +25,13 @@ SECRET_KEY = 'django-insecure-a#cm$8hvfq-+4u6$i13a!@cfr$4!l4&=#q41&t$zp=gg53q_ii
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 CORS_ALLOW_ALL_ORIGINS = True
 # Application definition
 
 INSTALLED_APPS = [
+    'classifier',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

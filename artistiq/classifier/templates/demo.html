@@ -1,10 +1,11 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Demo UI — Drawing Prediction</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="{% static 'classifier/style.css' %}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Tiny5&display=swap" rel="stylesheet">
@@ -13,7 +14,7 @@
 <body>
   <div class="gif-container">
     <div class="dialog-box" id="gifDialog">Let's play!</div>
-    <img id="gameGif" src="assets/idle.gif" alt="Character GIF">
+    <img id="gameGif" src="{% static 'classifier/assets/idle.gif' %}" alt="Character GIF">
     <button id="helpBtn"
         style="
             margin-top: 10px;
@@ -33,11 +34,11 @@
   <div class="frame" role="application" aria-label="Drawing UI demo">
     <div class="topbar">
         <div class="stars" title="rating">
-            <img src="assets/star.png" class="star" />
-            <img src="assets/star.png" class="star" />
-            <img src="assets/star.png" class="star" />
-            <img src="assets/star.png" class="star" />
-            <img src="assets/star.png" class="star" />
+            <img src="{% static 'classifier/assets/star.png' %}" class="star" />
+            <img src="{% static 'classifier/assets/star.png' %}" class="star" />
+            <img src="{% static 'classifier/assets/star.png' %}" class="star" />
+            <img src="{% static 'classifier/assets/star.png' %}" class="star" />
+            <img src="{% static 'classifier/assets/star.png' %}" class="star" />
         </div>
 
         <div class="draw-button" id="drawButton">
@@ -63,16 +64,16 @@
             ">
           </canvas>
           <canvas id="draw" width="640" height="480"></canvas>
-          <img id="idleGif" src="assets/nukoPeekLeft.gif" style="position:absolute;right:-170px;top:50%;transform:translateY(-50%);width:160px;height:auto;display:none;">
+          <img id="idleGif" src="{% static 'classifier/assets/nukoPeekLeft.gif' %}" style="position:absolute;right:-170px;top:50%;transform:translateY(-50%);width:160px;height:auto;display:none;">
         </div>
       </div>
 
       <div class="tools" aria-hidden="false">
         <div class="tool-icon pencil" id="pencilBtn" title="Pencil">
-            <img src="assets/pencil.png" style="width:50px; height:50px;" />
+            <img src="{% static 'classifier/assets/pencil.png' %}" style="width:50px; height:50px;" />
         </div>
         <div class="tool-icon eraser" id="eraserBtn" title="Eraser">
-            <img src="assets/eraser.png" style="width:50px; height:50px;" />
+            <img src="{% static 'classifier/assets/eraser.png' %}" style="width:50px; height:50px;" />
         </div>
 
         <div class="slider-wrap">
@@ -81,7 +82,7 @@
         </div>
 
         <div class="tool-icon" id="clearBtn" title="Clear">
-            <img src="assets/trash.png" style="width:50px; height:50px;" />
+            <img src="{% static 'classifier/assets/trash.png' %}" style="width:50px; height:50px;" />
         </div>
       </div>
     </div>
@@ -111,17 +112,17 @@
     </canvas>
 
     <div class="win-box">
-        <img src="assets/win.gif" class="win-gif">
+        <img src="{% static 'classifier/assets/win.gif' %}" class="win-gif">
         <h1 class="win-text">YOU WON!</h1>
         <button id="replayBtn" class="replay-btn">PLAY AGAIN</button>
     </div>
 
   </div>
-  <audio id="winSound" src="assets/celebration.mp3" preload="auto"></audio>
-  <audio id="starEarned" src ="assets/point1.mp3" preload="auto"></audio>
-  <audio id = "errorSound" src = "assets/error.mp3" preload="auto"></audio>
-  <audio id="bgMusic" src="assets/bg_music.mp3" preload="auto" loop></audio>
-  <audio id="applause" src="assets/applause.mp3" preload="auto"></audio>
+  <audio id="winSound" src="{% static 'classifier/assets/celebration.mp3' %}" preload="auto"></audio>
+  <audio id="starEarned" src ="{% static 'classifier/assets/point1.mp3' %}" preload="auto"></audio>
+  <audio id = "errorSound" src = "{% static 'classifier/assets/error.mp3' %}" preload="auto"></audio>
+  <audio id="bgMusic" src="{% static 'classifier/assets/bg_music.mp3' %}" preload="auto" loop></audio>
+  <audio id="applause" src="{% static 'classifier/assets/applause.mp3' %}" preload="auto"></audio>
   <div id="settingsOverlay"
      style="
         position: fixed;
@@ -205,10 +206,10 @@
     
     <div id="welcomeOverlay">
       <div id="welcomeContent">
-          <img id="welcomeGif" src="assets/welcome.gif">
+          <img id="welcomeGif" src="{% static 'classifier/assets/welcome.gif' %}">
           <div id="welcomeText">Hello, it's so nice to see you! Let's play!</div>
       </div>
     </div>
-  <script src="demo.js"></script>
+  <script src="{% static 'classifier/demo.js' %}"></script>
 </body>
 </html>

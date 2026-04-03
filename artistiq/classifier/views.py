@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
+from django.shortcuts import render, redirect
 import os
 import torch
 from torchvision import transforms
@@ -91,3 +92,6 @@ def predict_shape(request):
         prediction = CLASSES[index]
 
     return JsonResponse({"prediction": prediction, "score": round(torch.max(probs).item()*100) })
+
+def display_home(request):
+    return render(request,"demo.html")

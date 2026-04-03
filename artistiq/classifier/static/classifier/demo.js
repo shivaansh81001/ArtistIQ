@@ -240,7 +240,7 @@ const canvas = document.getElementById('draw');
     formData.append("image", blob, "drawing.png");
 
     try {
-        const response = await fetch("http://127.0.0.1:8000/predict/", {
+        const response = await fetch("http://localhost:9000/predict/", {
             method: "POST",
             body: formData
         });
@@ -436,28 +436,7 @@ const canvas = document.getElementById('draw');
       return items[Math.floor(Math.random()*items.length)];
     }
 
-    document.getElementById('shapesBtn').addEventListener('click', ()=>{
-      // draw a demo star in the center
-      const w = canvas.width/(window.devicePixelRatio||1);
-      const h = canvas.height/(window.devicePixelRatio||1);
-      drawStar(w/2, h/2, 30, 70, 5);
-    });
-
-    function drawStar(cx,cy,innerR,outerR,points){
-      ctx.save();
-      ctx.beginPath();
-      for(let i=0;i<points*2;i++){
-        const angle = Math.PI * i / points;
-        const r = (i%2===0)?outerR:innerR;
-        const x = cx + Math.cos(angle)*r;
-        const y = cy + Math.sin(angle)*r;
-        if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-      }
-      ctx.closePath();
-      ctx.fillStyle = '#ff6b3b';
-      ctx.fill();
-      ctx.restore();
-    }
+    
 
     function drawHintStroke(xs, ys) {
         const overlay = document.getElementById("hintOverlay");
