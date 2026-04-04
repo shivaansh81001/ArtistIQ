@@ -48,4 +48,5 @@ torchvision==0.26.0
 tqdm==4.67.3
 triton==3.6.0
 typing_extensions==4.15.0
+whitenoise==6.12.0
 yarl==1.23.0

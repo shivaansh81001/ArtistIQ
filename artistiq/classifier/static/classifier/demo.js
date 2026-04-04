@@ -240,7 +240,7 @@ const canvas = document.getElementById('draw');
     formData.append("image", blob, "drawing.png");
 
     try {
-        const response = await fetch("http://localhost:9000/predict/", {
+        const response = await fetch("https://artistiq.shivaanshbhatia.com/predict/", {
             method: "POST",
             body: formData
         });
