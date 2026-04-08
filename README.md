@@ -1,6 +1,6 @@
 # ArtistIQ
 
-## Try it yourself <br>
+## ⬇️ Try it yourself <br>
 <a href= "https://artistiq.shivaanshbhatia.com/classifier/"> ArtistiIQ </a>
 
 
